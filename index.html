@@ -261,7 +261,8 @@ function toObjects(grid){
     img:idx('이미지'), hover:idx('hover'), tag:idx('태그'),
     desc:idx('설명'), link:idx('링크'), order:idx('순서'), show:idx('노출'),
     detail:idx('상세'),
-    step:idx('단계'), time:idx('소요'), people:idx('인원'), tool:idx('공구')
+    step:idx('단계'), time:idx('소요'), people:idx('인원'), tool:idx('공구'),
+    simdesc:idx('시뮬설명')
   };
   const g = (r,k)=> col[k]>=0 ? (r[col[k]]||'').trim() : '';
   return grid.slice(1).map((r,i)=>({
@@ -270,7 +271,8 @@ function toObjects(grid){
     img:g(r,'img'), hover:g(r,'hover'), tag:g(r,'tag'),
     desc:g(r,'desc'), link:g(r,'link'), order:g(r,'order'), show:g(r,'show'),
     detail:g(r,'detail'),
-    step:g(r,'step'), time:g(r,'time'), people:g(r,'people'), tool:g(r,'tool')
+    step:g(r,'step'), time:g(r,'time'), people:g(r,'people'), tool:g(r,'tool'),
+    simdesc:g(r,'simdesc')
   })).filter(o=>o.name && o.show.toUpperCase()!=='N');
 }
 
@@ -410,10 +412,10 @@ function bracketSVG(){
     <circle cx="13" cy="38" r="2.2" fill="#5c6068"/><circle cx="77" cy="38" r="2.2" fill="#5c6068"/>
   </svg>`;
 }
-function simHTML(){
+function simHTML(sub){
   return `<div class="sim">
     <h3>설치 시뮬레이션</h3>
-    <p class="subt">모듈을 반대편 모듈과 수평하게 맞댄 뒤, 하단에 별도 지참 된 하드웨어로 모듈을 결합합니다.</p>
+    ${sub?`<p class="subt">${esc(sub).replace(/\n/g,'<br>')}</p>`:''}
     <div class="sim-stage play" id="simStage">
       <div class="sim-label">① 두 모듈을 수평으로 맞댄 뒤 하단 하드웨어로 결합</div>
       ${sofaSVG('R')}
@@ -529,7 +531,7 @@ function detailHTML(o){
     : `<span class="btn dark disabled">준비중</span>`;
   const chip = o.tag ? esc(o.tag) : esc(`${o.brand} · ${o.cat}`);
   const meta = metaRow([o.step,o.time,o.people,o.tool]);
-  const body = isTartan ? (simHTML()+faqHTML(o)+moduleGuideHTML()) : (pdfEmbed(id)+faqHTML(o));
+  const body = isTartan ? (simHTML(o.simdesc)+faqHTML(o)+moduleGuideHTML()) : (pdfEmbed(id)+faqHTML(o));
   return `<div class="detail">
     <nav class="crumb"><a data-home>설치가이드</a><i>›</i><a data-cbrand>${esc(o.brand)}</a><i>›</i><span>${esc(o.name)}</span></nav>
     <div class="dchip">${chip}</div>
