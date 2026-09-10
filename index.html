@@ -127,14 +127,13 @@
   .sim-steps{display:flex;gap:18px;flex-wrap:wrap;margin:16px 2px 0;color:var(--sub);font-size:13.5px}
   .sim-steps b{color:var(--ink)}
   .sim .replay{margin-top:14px}
-  .sim-stage.play .modL{animation:simDrop 1.5s cubic-bezier(.5,.05,.3,1) both}
-  .sim-stage.play .brk{animation:simBrk 1.7s ease both}
-  .sim-stage.play .sim-label{animation:simLbl 1.8s ease both}
-  @keyframes simDrop{0%{transform:translate(-46px,-190px);opacity:0}18%{opacity:1}
-    55%{transform:translate(-46px,0)}80%,100%{transform:translate(0,0)}}
-  @keyframes simBrk{0%,68%{opacity:0;transform:translateX(-50%) translateY(8px) scale(.7)}
-    86%{opacity:1;transform:translateX(-50%) translateY(0) scale(1.08)}100%{opacity:1;transform:translateX(-50%) scale(1)}}
-  @keyframes simLbl{0%,72%{opacity:0}100%{opacity:1}}
+  .sim-stage.play .modL{animation:simDrop 1.15s cubic-bezier(.45,.05,.3,1) both}
+  .sim-stage.play .modR{animation:simDrop 1.15s cubic-bezier(.45,.05,.3,1) both;animation-delay:1.2s}
+  .sim-stage.play .brk{animation:simBrk .7s ease both;animation-delay:2.4s}
+  .sim-stage.play .sim-label{animation:simLbl .6s ease both;animation-delay:2.5s}
+  @keyframes simDrop{0%{transform:translateY(-230px);opacity:0}14%{opacity:1}72%{transform:translateY(7px)}100%{transform:translateY(0)}}
+  @keyframes simBrk{0%{opacity:0;transform:translateX(-50%) translateY(8px) scale(.7)}70%{opacity:1;transform:translateX(-50%) translateY(0) scale(1.08)}100%{opacity:1;transform:translateX(-50%) scale(1)}}
+  @keyframes simLbl{0%{opacity:0}100%{opacity:1}}
   @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
   @media (max-width:600px){.hero h1{font-size:30px}.hero p{font-size:15px}.dtitle{font-size:27px}}
 </style>
@@ -228,7 +227,8 @@ function toObjects(grid){
     brand:idx('브랜드'), cat:idx('카테고리'), name:idx('아티클'),
     img:idx('이미지'), hover:idx('hover'), tag:idx('태그'),
     desc:idx('설명'), link:idx('링크'), order:idx('순서'), show:idx('노출'),
-    detail:idx('상세')
+    detail:idx('상세'),
+    step:idx('단계'), time:idx('소요'), people:idx('인원'), tool:idx('공구')
   };
   const g = (r,k)=> col[k]>=0 ? (r[col[k]]||'').trim() : '';
   return grid.slice(1).map((r,i)=>({
@@ -236,7 +236,8 @@ function toObjects(grid){
     brand:g(r,'brand'), cat:g(r,'cat'), name:g(r,'name'),
     img:g(r,'img'), hover:g(r,'hover'), tag:g(r,'tag'),
     desc:g(r,'desc'), link:g(r,'link'), order:g(r,'order'), show:g(r,'show'),
-    detail:g(r,'detail')
+    detail:g(r,'detail'),
+    step:g(r,'step'), time:g(r,'time'), people:g(r,'people'), tool:g(r,'tool')
   })).filter(o=>o.name && o.show.toUpperCase()!=='N');
 }
 
@@ -347,8 +348,8 @@ let byId = {};
 
 function driveId(url){ const m=(url||'').match(/\/d\/([^/]+)/); return m ? m[1] : ''; }
 function metaRow(v){
-  const items=[['단계',v[0]],['소요',v[1]],['인원',v[2]],['공구',v[3]]];
-  return `<div class="dmeta">`+items.map(x=>`<span><b>${x[0]}</b> ${esc(x[1])}</span>`).join('')+`</div>`;
+  const items=[['단계',v[0]],['소요',v[1]],['인원',v[2]],['공구',v[3]]].filter(x=>x[1]);
+  return items.length ? `<div class="dmeta">`+items.map(x=>`<span><b>${x[0]}</b> ${esc(x[1])}</span>`).join('')+`</div>` : '';
 }
 function pdfEmbed(id){
   return id ? `<div class="pdfwrap"><iframe src="https://drive.google.com/file/d/${id}/preview" loading="lazy"></iframe></div>`
@@ -379,17 +380,17 @@ function bracketSVG(){
 function simHTML(){
   return `<div class="sim">
     <h3>설치 시뮬레이션</h3>
-    <p class="subt">왼쪽 모듈을 내려 오른쪽 모듈과 맞댄 뒤, 하단을 브래킷으로 결합합니다.</p>
+    <p class="subt">모듈을 반대편 모듈과 수평하게 맞댄 뒤, 하단에 별도 지참 된 하드웨어로 모듈을 결합합니다.</p>
     <div class="sim-stage play" id="simStage">
-      <div class="sim-label">① 두 모듈을 맞대고 하단을 브래킷으로 체결</div>
+      <div class="sim-label">① 두 모듈을 수평으로 맞댄 뒤 하단 하드웨어로 결합</div>
       ${sofaSVG('R')}
       ${sofaSVG('L')}
-      <div class="brk">${bracketSVG()}<div class="cap">브래킷 결합</div></div>
+      <div class="brk">${bracketSVG()}<div class="cap">하드웨어 결합</div></div>
     </div>
     <div class="sim-steps">
-      <span><b>1.</b> 오른쪽 모듈 고정</span>
-      <span><b>2.</b> 왼쪽 모듈 정렬·안착</span>
-      <span><b>3.</b> 하단 브래킷 체결</span>
+      <span><b>1.</b> 왼쪽 모듈 안착</span>
+      <span><b>2.</b> 오른쪽 모듈 안착</span>
+      <span><b>3.</b> 하단 하드웨어 체결</span>
     </div>
     <button class="btn ghost replay" id="simReplay">▶ 다시 재생</button>
   </div>`;
@@ -401,7 +402,7 @@ function detailHTML(o){
     ? `<a class="btn dark" href="${esc(o.link)}" target="_blank" rel="noopener">📄 원본 PDF</a>`
     : `<span class="btn dark disabled">준비중</span>`;
   const chip = o.tag ? esc(o.tag) : esc(`${o.brand} · ${o.cat}`);
-  const meta = isTartan ? metaRow(['3 단계','10–15분','2인 권장','없음']) : '';
+  const meta = metaRow([o.step,o.time,o.people,o.tool]);
   const body = isTartan ? simHTML() : pdfEmbed(id);
   return `<div class="detail">
     <nav class="crumb"><a data-home>설치가이드</a><i>›</i><a data-cbrand>${esc(o.brand)}</a><i>›</i><span>${esc(o.name)}</span></nav>
