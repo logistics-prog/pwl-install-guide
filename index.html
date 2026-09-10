@@ -94,7 +94,9 @@
   .dchip{display:inline-block;background:#fff;border:1px solid var(--line);color:var(--accent);
     font-size:12px;font-weight:700;letter-spacing:.04em;padding:6px 12px;border-radius:20px;margin-bottom:14px}
   .dtitle{font-size:34px;margin:0 0 12px;letter-spacing:-.02em;text-wrap:balance}
-  .ddesc{color:var(--sub);font-size:16px;max-width:640px;margin:0 0 20px;line-height:1.6}
+  .ddesc{color:var(--sub);font-size:16px;max-width:660px;margin:0 0 20px;line-height:1.7}
+  .ddesc p{margin:0 0 12px}
+  .ddesc p:last-child{margin-bottom:0}
   .dmeta{display:flex;flex-wrap:wrap;gap:22px;color:var(--sub);font-size:14px;margin-bottom:22px}
   .dmeta b{color:var(--ink);font-weight:700;margin-right:4px}
   .dbtns{display:flex;gap:10px;flex-wrap:wrap}
@@ -104,6 +106,10 @@
   .btn.ghost{background:#fff}
   .btn.disabled{opacity:.5;pointer-events:none}
   .drule{border:none;border-top:1px solid var(--line);margin:30px 0}
+  .dbody{max-width:680px;margin:0 0 26px;color:var(--ink);font-size:15px;line-height:1.75}
+  .dbody p{margin:0 0 14px}
+  .dbody .bh{font-size:17px;margin:22px 0 10px}
+  .dbody a{color:var(--accent);word-break:break-all}
   .pdfwrap{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#fff}
   .pdfwrap iframe{width:100%;height:72vh;border:0;display:block}
   .dback{margin-top:26px}
@@ -199,6 +205,20 @@ function parseCSV(text){
 }
 
 function esc(s){return (s||'').replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));}
+// 상세 본문: 빈 줄=문단, 줄바꿈=<br>, URL 자동링크, 줄머리 "# "=소제목
+function fmtBody(t){
+  const link = s => s.replace(/(https?:\/\/[^\s<]+)/g,'<a href="$1" target="_blank" rel="noopener">$1</a>');
+  const lines = esc(t).replace(/\r/g,'').split('\n');
+  let html='', buf=[];
+  const flush = ()=>{ if(buf.length){ html+=`<p>${buf.join('<br>')}</p>`; buf=[]; } };
+  lines.forEach(ln=>{
+    if(/^#\s/.test(ln)){ flush(); html+=`<h3 class="bh">${link(ln.replace(/^#\s/,''))}</h3>`; }
+    else if(ln.trim()===''){ flush(); }
+    else buf.push(link(ln));
+  });
+  flush();
+  return html;
+}
 
 function toObjects(grid){
   if(!grid.length) return [];
@@ -207,14 +227,16 @@ function toObjects(grid){
   const col = {
     brand:idx('브랜드'), cat:idx('카테고리'), name:idx('아티클'),
     img:idx('이미지'), hover:idx('hover'), tag:idx('태그'),
-    desc:idx('설명'), link:idx('링크'), order:idx('순서'), show:idx('노출')
+    desc:idx('설명'), link:idx('링크'), order:idx('순서'), show:idx('노출'),
+    detail:idx('상세')
   };
   const g = (r,k)=> col[k]>=0 ? (r[col[k]]||'').trim() : '';
   return grid.slice(1).map((r,i)=>({
     id:i,
     brand:g(r,'brand'), cat:g(r,'cat'), name:g(r,'name'),
     img:g(r,'img'), hover:g(r,'hover'), tag:g(r,'tag'),
-    desc:g(r,'desc'), link:g(r,'link'), order:g(r,'order'), show:g(r,'show')
+    desc:g(r,'desc'), link:g(r,'link'), order:g(r,'order'), show:g(r,'show'),
+    detail:g(r,'detail')
   })).filter(o=>o.name && o.show.toUpperCase()!=='N');
 }
 
@@ -385,7 +407,7 @@ function detailHTML(o){
     <nav class="crumb"><a data-home>설치가이드</a><i>›</i><a data-cbrand>${esc(o.brand)}</a><i>›</i><span>${esc(o.name)}</span></nav>
     <div class="dchip">${chip}</div>
     <h1 class="dtitle">${esc(o.name)}</h1>
-    ${o.desc?`<p class="ddesc">${esc(o.desc)}</p>`:''}
+    ${(o.detail||o.desc)?`<div class="ddesc">${fmtBody(o.detail||o.desc)}</div>`:''}
     ${meta}
     <div class="dbtns">${pdfBtn}</div>
     <hr class="drule">
