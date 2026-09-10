@@ -529,7 +529,7 @@ function detailHTML(o){
     : `<span class="btn dark disabled">준비중</span>`;
   const chip = o.tag ? esc(o.tag) : esc(`${o.brand} · ${o.cat}`);
   const meta = metaRow([o.step,o.time,o.people,o.tool]);
-  const body = isTartan ? (simHTML()+moduleGuideHTML()) : pdfEmbed(id);
+  const body = isTartan ? (simHTML()+faqHTML(o)+moduleGuideHTML()) : (pdfEmbed(id)+faqHTML(o));
   return `<div class="detail">
     <nav class="crumb"><a data-home>설치가이드</a><i>›</i><a data-cbrand>${esc(o.brand)}</a><i>›</i><span>${esc(o.name)}</span></nav>
     <div class="dchip">${chip}</div>
@@ -539,7 +539,6 @@ function detailHTML(o){
     <div class="dbtns">${pdfBtn}</div>
     <hr class="drule">
     ${body}
-    ${faqHTML(o)}
     <div class="dback"><button class="btn ghost" data-back>← 목록으로</button></div>
   </div>`;
 }
