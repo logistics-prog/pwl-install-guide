@@ -38,8 +38,9 @@
   .scrim.open{opacity:1;visibility:visible}
   .drawer{position:fixed;top:0;right:0;height:100%;width:250px;max-width:80vw;background:#fff;
     box-shadow:-6px 0 24px rgba(0,0,0,.12);transform:translateX(100%);transition:transform .28s ease;
-    z-index:21;padding:18px 16px;display:flex;flex-direction:column;gap:2px}
+    z-index:21;padding:18px 16px;display:flex;flex-direction:column;gap:2px;overflow-y:auto}
   .drawer.open{transform:translateX(0)}
+  .drawer .brand-head{margin-top:16px;padding-top:16px;border-top:1px solid var(--line)}
   .drawer .close{align-self:flex-end;border:none;background:none;font-size:24px;line-height:1;
     color:var(--sub);cursor:pointer;padding:2px 6px}
   .drawer h4{margin:2px 6px 12px;font-size:12px;letter-spacing:.1em;color:var(--sub)}
@@ -52,7 +53,7 @@
   /* 활성 필터 칩 */
   .filterbar{max-width:1040px;margin:0 auto;padding:4px 24px 0;text-align:center}
   .chip{display:inline-flex;align-items:center;gap:7px;background:var(--tag);color:#fff;
-    border:none;border-radius:20px;padding:7px 14px;font-size:13px;font-weight:600;cursor:pointer}
+    border:none;border-radius:20px;padding:7px 14px;font-size:13px;font-weight:600;cursor:pointer;margin:0 4px}
   main{max-width:1040px;margin:0 auto;padding:8px 24px 60px}
   .sec-head{display:flex;align-items:baseline;gap:10px;margin:34px 0 16px}
   .sec-head h2{font-size:20px;margin:0}
@@ -224,11 +225,13 @@ const CATMAP = {
   'SIDE & SOFA TABLE':'사이드테이블 & 소파테이블', 'CHAIR':'체어', 'STORAGE':'수납장',
   'LEFF':'LEFF', 'ETC':'ETC'
 };
-let currentCat = '';   // '' = 전체
+let currentCat = '';     // '' = 전체 (카테고리)
+let currentBrand = '';   // '' = 전체 (브랜드)
 
 function currentList(){
   let list = rows;
   if(currentCat){ const ko = CATMAP[currentCat]; list = list.filter(o=>o.cat.trim()===ko); }
+  if(currentBrand){ list = list.filter(o=>o.brand.trim()===currentBrand); }
   const q = document.getElementById('q').value.trim().toLowerCase();
   if(q){ const kw = q.split(/\s+/);
     list = list.filter(o=>{
@@ -240,8 +243,13 @@ function currentList(){
 }
 function renderChip(){
   const fb = document.getElementById('filterbar');
-  fb.innerHTML = currentCat ? `<button class="chip" id="clearCat">${esc(currentCat)} &times;</button>` : '';
-  const b = document.getElementById('clearCat'); if(b) b.onclick = ()=>selectCat('');
+  let h = '';
+  if(currentCat)   h += `<button class="chip" data-clear="cat">${esc(currentCat)} &times;</button>`;
+  if(currentBrand) h += `<button class="chip" data-clear="brand">${esc(currentBrand)} &times;</button>`;
+  fb.innerHTML = h;
+  fb.querySelectorAll('.chip').forEach(b=>b.onclick = ()=>{
+    if(b.dataset.clear==='cat') selectCat(''); else selectBrand(currentBrand);
+  });
 }
 function refresh(){ render(currentList()); renderChip(); }
 
@@ -252,15 +260,18 @@ const closeDrawer = ()=>{ drawer.classList.remove('open'); scrim.classList.remov
 document.getElementById('menuBtn').onclick = openDrawer;
 document.getElementById('drawerClose').onclick = closeDrawer;
 scrim.onclick = closeDrawer;
-function selectCat(cat){
-  currentCat = cat;
-  drawer.querySelectorAll('a[data-cat]').forEach(a=>a.classList.toggle('active', a.dataset.cat===cat));
-  closeDrawer(); refresh(); window.scrollTo({top:0, behavior:'smooth'});
-}
+function markCat(){ drawer.querySelectorAll('a[data-cat]').forEach(a=>a.classList.toggle('active', a.dataset.cat===currentCat)); }
+function markBrand(){ drawer.querySelectorAll('a[data-brand]').forEach(a=>a.classList.toggle('active', a.dataset.brand===currentBrand)); }
+function selectCat(cat){ currentCat = cat; markCat(); closeDrawer(); refresh(); window.scrollTo({top:0, behavior:'smooth'}); }
+function selectBrand(brand){ currentBrand = (currentBrand===brand ? '' : brand); markBrand(); closeDrawer(); refresh(); window.scrollTo({top:0, behavior:'smooth'}); }
 drawer.querySelectorAll('a[data-cat]').forEach(a=>a.onclick = ()=>selectCat(a.dataset.cat));
 
 // 홈(로고) → 첫 화면
-document.getElementById('home').onclick = ()=>{ document.getElementById('q').value=''; selectCat(''); };
+document.getElementById('home').onclick = ()=>{
+  document.getElementById('q').value='';
+  currentCat=''; currentBrand=''; markCat(); markBrand();
+  closeDrawer(); refresh(); window.scrollTo({top:0, behavior:'smooth'});
+};
 
 document.getElementById('q').addEventListener('input', refresh);
 
@@ -268,12 +279,20 @@ fetch(CSV_URL)
   .then(r=>{ if(!r.ok) throw new Error(r.status); return r.text(); })
   .then(t=>{
     rows = toObjects(parseCSV(t));
-    // 드로어에 카테고리별 수량 표시
+    // 카테고리별 수량
     drawer.querySelectorAll('a[data-cat]').forEach(a=>{
       const cat = a.dataset.cat;
       const n = cat ? rows.filter(o=>o.cat.trim()===CATMAP[cat]).length : rows.length;
       a.insertAdjacentHTML('beforeend', `<span class="n">${n}</span>`);
     });
+    // 브랜드 목록 (가나다·ABC 순)
+    const bcount = {};
+    rows.forEach(o=>{ const b=o.brand.trim(); if(b) bcount[b]=(bcount[b]||0)+1; });
+    const brands = Object.keys(bcount).sort((a,b)=>a.localeCompare(b,'ko'));
+    const bhtml = `<h4 class="brand-head">브랜드</h4>` +
+      brands.map(b=>`<a data-brand="${esc(b)}">${esc(b)}<span class="n">${bcount[b]}</span></a>`).join('');
+    drawer.insertAdjacentHTML('beforeend', bhtml);
+    drawer.querySelectorAll('a[data-brand]').forEach(a=>a.onclick = ()=>selectBrand(a.dataset.brand));
     refresh();
   })
   .catch(e=>{ view.innerHTML = `<div class="center">불러오지 못했습니다. 시트 공유 설정(링크가 있는 모든 사용자·보기)과 탭 이름 '${esc(CATALOG_TAB)}'을 확인해 주세요.<br><small>${esc(String(e))}</small></div>`; });
