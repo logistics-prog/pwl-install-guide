@@ -142,6 +142,18 @@
   .mg-svg{width:100%;height:auto;max-height:66px}
   .mg-name{margin-top:10px;font-size:14px;font-weight:700}
   .mg-sub{font-size:12px;color:var(--sub);margin-top:3px}
+  /* ===== FAQ ===== */
+  .faq{margin-top:26px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:22px}
+  .faq h3{margin:0 0 14px;font-size:18px}
+  .faq-item{border:1px solid var(--line);border-radius:12px;margin-bottom:10px;background:var(--bg)}
+  .faq-item summary{padding:14px 42px 14px 16px;cursor:pointer;font-weight:600;font-size:15px;
+    list-style:none;position:relative}
+  .faq-item summary::-webkit-details-marker{display:none}
+  .faq-item summary::after{content:'+';position:absolute;right:16px;top:12px;color:var(--sub);font-size:19px}
+  .faq-item[open] summary::after{content:'\2212'}
+  .faq-a{padding:2px 16px 15px;color:var(--ink);font-size:14px;line-height:1.7}
+  .faq-a p{margin:0 0 10px}
+  .faq-a a{color:var(--accent);word-break:break-all}
   .sim-stage.play .modL{animation:simDrop 1.2s cubic-bezier(.45,.05,.3,1) both}
   .sim-stage.play .brk{animation:simBrk .6s ease both;animation-delay:1.3s}
   .sim-stage.play .sim-label{animation:simLbl .6s ease both;animation-delay:1.35s}
@@ -193,13 +205,16 @@
 <script>
 // ===== 설정 =====
 const SHEET_ID = '1paHLmKICvQ7EAlh07nir9-9BPW_VEHIzcesS4JRJ1LU';
-const CATALOG_TAB = '카탈로그';   // 시트 탭 이름
-// 열 헤더(순서 무관, 이름으로 인식): 브랜드 카테고리 아티클 이미지 hover 태그 설명 링크 순서 노출
+const CATALOG_TAB = '카탈로그';   // 카탈로그 탭
+const FAQ_TAB = 'FAQ';           // FAQ 탭 (열: 브랜드 아티클 질문 답변 순서)
+// 열 헤더(순서 무관, 이름으로 인식): 브랜드 카테고리 아티클 이미지 hover 태그 설명 링크 순서 노출 상세 단계 소요 인원 공구
 // ================
 
-const CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(CATALOG_TAB)}`;
+const csvUrl = tab => `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(tab)}`;
+const CSV_URL = csvUrl(CATALOG_TAB);
 const view = document.getElementById('view');
 let rows = [];
+let faqRows = [];
 
 // --- CSV 파서 (따옴표·줄바꿈 안전) ---
 function parseCSV(text){
@@ -424,15 +439,15 @@ function simHTML(){
 }
 // ===== 모듈 구성 가이드 (TARTAN) =====
 const TARTAN_MODULES = [
-  {name:'암레스트 좌/우', sub:'암레스트 ×1', mods:['armL']},
-  {name:'암레스트 라운지', sub:'라운지 ×1', mods:['lounge']},
-  {name:'미들', sub:'미들 ×1', mods:['mid']},
+  {name:'암레스트 좌/우', sub:'암레스트', mods:['armL']},
+  {name:'암레스트 라운지', sub:'라운지', mods:['lounge']},
+  {name:'미들', sub:'미들', mods:['mid']},
   {name:'소파 3인 좌형', sub:'암레스트 좌형 · 미들', mods:['armL','mid']},
   {name:'소파 3인 우형', sub:'미들 · 암레스트 우형', mods:['mid','armR']},
   {name:'소파 3인 코너 좌형', sub:'암레스트 우형 ×2', mods:['armR','armR']},
   {name:'소파 3인 코너 우형', sub:'암레스트 좌형 ×2', mods:['armL','armL']},
-  {name:'소파 3인 B 좌형', sub:'코너 ×1 · 암레스트 좌형 ×1', mods:['corner','armL']},
-  {name:'소파 3인 B 우형', sub:'암레스트 우형 ×1 · 코너 ×1', mods:['armR','corner']},
+  {name:'소파 3인 B 좌형', sub:'코너 · 암레스트 좌형', mods:['corner','armL']},
+  {name:'소파 3인 B 우형', sub:'암레스트 우형 · 코너', mods:['armR','corner']},
   {name:'소파 4인 A', sub:'암레스트 좌형 · 암레스트 우형', mods:['armL','armR']},
   {name:'소파 4인 B', sub:'암레스트 라운지 ×2', mods:['lounge','lounge']},
   {name:'소파 4인 코너 A 좌형', sub:'암레스트 좌형 · 암레스트 라운지', mods:['armL','lounge']},
@@ -440,7 +455,7 @@ const TARTAN_MODULES = [
   {name:'소파 4인 코너 B 좌형', sub:'암레스트 우형 ×2 · 미들', mods:['armR','armR','mid']},
   {name:'소파 4인 코너 B 우형', sub:'암레스트 좌형 ×2 · 미들', mods:['armL','armL','mid']},
   {name:'소파 5인', sub:'암레스트 좌형 · 미들 · 암레스트 우형', mods:['armL','mid','armR']},
-  {name:'쿠션 S / L', sub:'쿠션 ×1', mods:['cushion']}
+  {name:'쿠션 S / L', sub:'쿠션', mods:['cushion']}
 ];
 // 모듈 폭(방석 넓이 차이): 코너=좁게, 암레스트=중간, 라운지=넓게
 const MW = {mid:112, armL:120, armR:120, corner:96, lounge:152, cushion:84};
@@ -474,7 +489,7 @@ function composeModules(mods){
 function moduleGuideHTML(){
   return `<div class="modguide">
     <h3>모듈 구성</h3>
-    <p class="subt">제품별 구성 모듈입니다. (×2 = 해당 모듈 2개 · 표기 없음/×1 = 1개)</p>
+    <p class="subt">제품별 구성 모듈 리스트 (×2 = 해당 모듈 2개)</p>
     <div class="mg-grid">
       ${TARTAN_MODULES.map(m=>`<div class="mg-card">
         <div class="mg-img">${composeModules(m.mods)}</div>
@@ -483,6 +498,27 @@ function moduleGuideHTML(){
       </div>`).join('')}
     </div>
   </div>`;
+}
+
+// ===== FAQ =====
+function toFaq(grid){
+  if(!grid.length) return [];
+  const head=grid[0];
+  // 헤더 셀에 목록이 덧붙어 있어도(예: "브랜드 매직볼트 …") 라벨로 시작하면 인식
+  const clean=h=>(h||'').replace(/\s/g,'').toLowerCase();
+  const idx=n=>head.findIndex(h=>clean(h).startsWith(n.toLowerCase()));
+  const c={brand:idx('브랜드'), art:idx('아티클'), q:idx('질문'), a:idx('답변'), order:idx('순서')};
+  const g=(r,k)=> c[k]>=0 ? (r[c[k]]||'').trim() : '';
+  return grid.slice(1).map(r=>({brand:g(r,'brand'), article:g(r,'art'), q:g(r,'q'), a:g(r,'a'), order:g(r,'order')})).filter(f=>f.q);
+}
+function faqHTML(o){
+  const nz=s=>(s||'').replace(/\s/g,'').toLowerCase();
+  const list=faqRows.filter(f=> nz(f.article) && nz(f.brand)===nz(o.brand) && nz(o.name).includes(nz(f.article)))
+    .sort((a,b)=>(Number(a.order||1e9))-(Number(b.order||1e9)));
+  if(!list.length) return '';
+  return `<div class="faq"><h3>자주 하는 질문 (FAQ)</h3>`+
+    list.map(f=>`<details class="faq-item"><summary>${esc(f.q)}</summary><div class="faq-a">${fmtBody(f.a)}</div></details>`).join('')+
+    `</div>`;
 }
 
 function detailHTML(o){
@@ -503,6 +539,7 @@ function detailHTML(o){
     <div class="dbtns">${pdfBtn}</div>
     <hr class="drule">
     ${body}
+    ${faqHTML(o)}
     <div class="dback"><button class="btn ghost" data-back>← 목록으로</button></div>
   </div>`;
 }
@@ -539,7 +576,8 @@ fetch(CSV_URL)
     document.getElementById('brandSection').innerHTML = `<h4>브랜드</h4>` +
       brands.map(b=>`<a data-brand="${esc(b)}">${esc(b)}<span class="n">${bcount[b]}</span></a>`).join('');
     drawer.querySelectorAll('a[data-brand]').forEach(a=>a.onclick = ()=>selectBrand(a.dataset.brand));
-    route();
+    // FAQ 탭 로드 후 라우팅
+    fetch(csvUrl(FAQ_TAB)).then(r=>r.ok?r.text():'').then(ft=>{ if(ft) faqRows=toFaq(parseCSV(ft)); }).catch(()=>{}).finally(route);
   })
   .catch(e=>{ view.innerHTML = `<div class="center">불러오지 못했습니다. 시트 공유 설정(링크가 있는 모든 사용자·보기)과 탭 이름 '${esc(CATALOG_TAB)}'을 확인해 주세요.<br><small>${esc(String(e))}</small></div>`; });
 </script>
