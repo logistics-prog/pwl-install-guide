@@ -3,7 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>잭슨카멜레온 설치가이드</title>
+<title>무브먼트랩 설치가이드</title>
+<link rel="icon" href="data:image/x-icon;base64,AAABAAEAEBAAAAEAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAAAQAABMLAAATCwAAAAAAAAAAAAD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wAHBwT/BwcE/wcHBP8HBwQwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABwcEMAcHBP8HBwT/BwcE/////wD///8ABwcE/wcHBP8HBwT/BwcEMAAAAAAHBwQWBwcE1wcHBNMHBwQRAAAAAAcHBDAHBwT/BwcE/wcHBP////8A////AAcHBP8HBwT/BwcE/wcHBDAAAAAABwcEowcHBP8HBwT/BwcElQAAAAAHBwQwBwcE/wcHBP8HBwT/////AP///wAHBwT/BwcE/wcHBP8HBwQwBwcEQQcHBP8HBwT/BwcE/wcHBP0HBwQxBwcEMAcHBP8HBwT/BwcE/////wD///8ABwcE/wcHBP8HBwT/BwcENgcHBNcHBwT/BwcE/wcHBP8HBwT/BwcExAcHBDEHBwT/BwcE/wcHBP////8A////AAcHBP8HBwT/BwcE/wcHBKsHBwT/BwcE/wcHBNAHBwTDBwcE/wcHBP8HBwSOBwcE/wcHBP8HBwT/////AP///wAHBwT/BwcE/wcHBP8HBwT/BwcE/wcHBP4HBwQ5BwcELwcHBPwHBwT/BwcE/AcHBP8HBwT/BwcE/////wD///8ABwcE/wcHBP8HBwT/BwcE/wcHBP8HBwSbAAAAAAAAAAAHBwSSBwcE/wcHBP8HBwT/BwcE/wcHBP////8A////AAcHBP8HBwT/BwcE/wcHBP8HBwTsBwcEEgAAAAAAAAAABwcEDwcHBOkHBwT/BwcE/wcHBP8HBwT/////AP///wAHBwT/BwcE/wcHBP8HBwT/BwcEYgAAAAAAAAAAAAAAAAAAAAAHBwRiBwcE/wcHBP8HBwT/BwcE/////wD///8ABwcE/wcHBP8HBwT/BwcExAcHBAEAAAAAAAAAAAAAAAAAAAAABwcEAQcHBMcHBwT/BwcE/wcHBP////8A////AAcHBP8HBwT/BwcE/AcHBC0AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHBwQxBwcE/QcHBP8HBwT/////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A//8AAP//AACH4QAAhCEAAIQhAACAAQAAgAEAAIABAACAAQAAgYEAAIGBAACDwQAAg8EAAIfhAAD//wAA//8AAA==">
+<link rel="apple-touch-icon" href="https://movementlab.kr/web/upload/favicon_20191212160207.ico">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
 <style>
   :root{
@@ -16,17 +18,41 @@
   a{color:inherit}
   header{position:sticky;top:0;z-index:5;background:var(--bg);
     padding:16px 24px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px}
-  .logo{width:26px;height:26px;border-radius:50%;background:var(--tag);color:#fff;
-    display:grid;place-items:center;font-weight:800;font-size:14px}
+  .logo{width:26px;height:26px;object-fit:contain;display:block}
+  .home{display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit;cursor:pointer}
   header b{font-size:15px}
-  .search{margin-left:auto;max-width:280px;width:100%}
-  .search input{width:100%;padding:9px 13px;border:1px solid var(--line);border-radius:20px;
+  .menu-btn{margin-left:auto;background:none;border:1px solid var(--line);border-radius:10px;
+    width:40px;height:36px;display:grid;place-items:center;cursor:pointer;color:var(--ink);font-size:17px}
+  .menu-btn:hover{background:#fff}
+  .hero{max-width:1040px;margin:0 auto;padding:44px 24px 8px;text-align:center}
+  .hero h1{font-size:37px;margin:0 0 12px;letter-spacing:-.02em;text-wrap:balance}
+  .hero h1 span{color:var(--accent)}
+  .hero p{color:var(--sub);margin:0 auto;max-width:600px;font-size:16px}
+  .search{margin:24px auto 0;max-width:480px;width:100%}
+  .search input{width:100%;padding:12px 16px;border:1px solid var(--line);border-radius:26px;
     background:#fff;font:inherit;color:inherit;outline:none}
   .search input:focus{border-color:var(--accent)}
-  .hero{max-width:1040px;margin:0 auto;padding:44px 24px 8px;text-align:center}
-  .hero h1{font-size:32px;margin:0 0 10px;letter-spacing:-.02em;text-wrap:balance}
-  .hero h1 span{color:var(--accent)}
-  .hero p{color:var(--sub);margin:0 auto;max-width:560px;font-size:14px}
+  /* 카테고리 드로어 */
+  .scrim{position:fixed;inset:0;background:rgba(0,0,0,.35);opacity:0;visibility:hidden;
+    transition:opacity .25s;z-index:20}
+  .scrim.open{opacity:1;visibility:visible}
+  .drawer{position:fixed;top:0;right:0;height:100%;width:250px;max-width:80vw;background:#fff;
+    box-shadow:-6px 0 24px rgba(0,0,0,.12);transform:translateX(100%);transition:transform .28s ease;
+    z-index:21;padding:18px 16px;display:flex;flex-direction:column;gap:2px}
+  .drawer.open{transform:translateX(0)}
+  .drawer .close{align-self:flex-end;border:none;background:none;font-size:24px;line-height:1;
+    color:var(--sub);cursor:pointer;padding:2px 6px}
+  .drawer h4{margin:2px 6px 12px;font-size:12px;letter-spacing:.1em;color:var(--sub)}
+  .drawer a{padding:12px 14px;border-radius:12px;text-decoration:none;color:var(--ink);
+    font-weight:600;font-size:15px;cursor:pointer;transition:background .12s;display:flex;
+    justify-content:space-between;align-items:center}
+  .drawer a:hover{background:var(--bg)}
+  .drawer a.active{background:var(--tag);color:#fff}
+  .drawer a .n{font-size:12px;font-weight:600;opacity:.6}
+  /* 활성 필터 칩 */
+  .filterbar{max-width:1040px;margin:0 auto;padding:4px 24px 0;text-align:center}
+  .chip{display:inline-flex;align-items:center;gap:7px;background:var(--tag);color:#fff;
+    border:none;border-radius:20px;padding:7px 14px;font-size:13px;font-weight:600;cursor:pointer}
   main{max-width:1040px;margin:0 auto;padding:8px 24px 60px}
   .sec-head{display:flex;align-items:baseline;gap:10px;margin:34px 0 16px}
   .sec-head h2{font-size:20px;margin:0}
@@ -58,21 +84,41 @@
     border-radius:50%;animation:sp 1s linear infinite;margin:0 auto 14px}
   @keyframes sp{to{transform:rotate(360deg)}}
   @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
-  @media (max-width:600px){.hero h1{font-size:26px}.search{max-width:150px}}
+  @media (max-width:600px){.hero h1{font-size:30px}.hero p{font-size:15px}}
 </style>
 </head>
 <body>
 <header>
-  <div class="logo">J</div><b>잭슨카멜레온 · 설치가이드</b>
-  <div class="search"><input id="q" type="search" placeholder="브랜드·제품 검색" autocomplete="off"></div>
+  <a class="home" id="home" title="첫 화면으로">
+    <img class="logo" alt="무브먼트랩" src="data:image/x-icon;base64,AAABAAEAEBAAAAEAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAAAQAABMLAAATCwAAAAAAAAAAAAD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wAHBwT/BwcE/wcHBP8HBwQwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABwcEMAcHBP8HBwT/BwcE/////wD///8ABwcE/wcHBP8HBwT/BwcEMAAAAAAHBwQWBwcE1wcHBNMHBwQRAAAAAAcHBDAHBwT/BwcE/wcHBP////8A////AAcHBP8HBwT/BwcE/wcHBDAAAAAABwcEowcHBP8HBwT/BwcElQAAAAAHBwQwBwcE/wcHBP8HBwT/////AP///wAHBwT/BwcE/wcHBP8HBwQwBwcEQQcHBP8HBwT/BwcE/wcHBP0HBwQxBwcEMAcHBP8HBwT/BwcE/////wD///8ABwcE/wcHBP8HBwT/BwcENgcHBNcHBwT/BwcE/wcHBP8HBwT/BwcExAcHBDEHBwT/BwcE/wcHBP////8A////AAcHBP8HBwT/BwcE/wcHBKsHBwT/BwcE/wcHBNAHBwTDBwcE/wcHBP8HBwSOBwcE/wcHBP8HBwT/////AP///wAHBwT/BwcE/wcHBP8HBwT/BwcE/wcHBP4HBwQ5BwcELwcHBPwHBwT/BwcE/AcHBP8HBwT/BwcE/////wD///8ABwcE/wcHBP8HBwT/BwcE/wcHBP8HBwSbAAAAAAAAAAAHBwSSBwcE/wcHBP8HBwT/BwcE/wcHBP////8A////AAcHBP8HBwT/BwcE/wcHBP8HBwTsBwcEEgAAAAAAAAAABwcEDwcHBOkHBwT/BwcE/wcHBP8HBwT/////AP///wAHBwT/BwcE/wcHBP8HBwT/BwcEYgAAAAAAAAAAAAAAAAAAAAAHBwRiBwcE/wcHBP8HBwT/BwcE/////wD///8ABwcE/wcHBP8HBwT/BwcExAcHBAEAAAAAAAAAAAAAAAAAAAAABwcEAQcHBMcHBwT/BwcE/wcHBP////8A////AAcHBP8HBwT/BwcE/AcHBC0AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHBwQxBwcE/QcHBP8HBwT/////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A//8AAP//AACH4QAAhCEAAIQhAACAAQAAgAEAAIABAACAAQAAgYEAAIGBAACDwQAAg8EAAIfhAAD//wAA//8AAA=="><b>무브먼트랩 · 설치가이드</b>
+  </a>
+  <button class="menu-btn" id="menuBtn" aria-label="카테고리 메뉴">☰</button>
 </header>
 
 <div class="hero">
-  <h1><span>설치 가이드</span></h1>
-  <p>제품을 선택하면 설치 가이드를 볼 수 있습니다.</p>
+  <h1>브랜드 <span>설치 가이드</span></h1>
+  <p>컬렉션 별 이미지를 선택하면 주요 FAQ 와 설치가이드를 볼 수 있습니다.</p>
+  <div class="search"><input id="q" type="search" placeholder="브랜드·제품 검색" autocomplete="off"></div>
 </div>
 
+<div class="filterbar" id="filterbar"></div>
+
 <main id="view"><div class="center"><div class="spin"></div>불러오는 중…</div></main>
+
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-label="카테고리">
+  <button class="close" id="drawerClose" aria-label="닫기">&times;</button>
+  <h4>카테고리</h4>
+  <a data-cat="" class="active">전체</a>
+  <a data-cat="SOFA">SOFA</a>
+  <a data-cat="BED">BED</a>
+  <a data-cat="TABLE">TABLE</a>
+  <a data-cat="SIDE & SOFA TABLE">SIDE &amp; SOFA TABLE</a>
+  <a data-cat="CHAIR">CHAIR</a>
+  <a data-cat="STORAGE">STORAGE</a>
+  <a data-cat="LEFF">LEFF</a>
+  <a data-cat="ETC">ETC</a>
+</aside>
 
 <script>
 // ===== 설정 =====
@@ -172,20 +218,64 @@ function render(list){
   });
 }
 
-function applyFilter(){
+// 영문 버튼 → 시트 카테고리(한글) 매핑
+const CATMAP = {
+  'SOFA':'소파', 'BED':'베드', 'TABLE':'다이닝테이블',
+  'SIDE & SOFA TABLE':'사이드테이블 & 소파테이블', 'CHAIR':'체어', 'STORAGE':'수납장',
+  'LEFF':'LEFF', 'ETC':'ETC'
+};
+let currentCat = '';   // '' = 전체
+
+function currentList(){
+  let list = rows;
+  if(currentCat){ const ko = CATMAP[currentCat]; list = list.filter(o=>o.cat.trim()===ko); }
   const q = document.getElementById('q').value.trim().toLowerCase();
-  if(!q){ render(rows); return; }
-  const kw = q.split(/\s+/);
-  render(rows.filter(o=>{
-    const hay = `${o.brand} ${o.cat} ${o.name} ${o.desc}`.toLowerCase();
-    return kw.every(k=>hay.includes(k));
-  }));
+  if(q){ const kw = q.split(/\s+/);
+    list = list.filter(o=>{
+      const hay = `${o.brand} ${o.cat} ${o.name} ${o.desc}`.toLowerCase();
+      return kw.every(k=>hay.includes(k));
+    });
+  }
+  return list;
 }
-document.getElementById('q').addEventListener('input', applyFilter);
+function renderChip(){
+  const fb = document.getElementById('filterbar');
+  fb.innerHTML = currentCat ? `<button class="chip" id="clearCat">${esc(currentCat)} &times;</button>` : '';
+  const b = document.getElementById('clearCat'); if(b) b.onclick = ()=>selectCat('');
+}
+function refresh(){ render(currentList()); renderChip(); }
+
+// 드로어
+const drawer = document.getElementById('drawer'), scrim = document.getElementById('scrim');
+const openDrawer = ()=>{ drawer.classList.add('open'); scrim.classList.add('open'); };
+const closeDrawer = ()=>{ drawer.classList.remove('open'); scrim.classList.remove('open'); };
+document.getElementById('menuBtn').onclick = openDrawer;
+document.getElementById('drawerClose').onclick = closeDrawer;
+scrim.onclick = closeDrawer;
+function selectCat(cat){
+  currentCat = cat;
+  drawer.querySelectorAll('a[data-cat]').forEach(a=>a.classList.toggle('active', a.dataset.cat===cat));
+  closeDrawer(); refresh(); window.scrollTo({top:0, behavior:'smooth'});
+}
+drawer.querySelectorAll('a[data-cat]').forEach(a=>a.onclick = ()=>selectCat(a.dataset.cat));
+
+// 홈(로고) → 첫 화면
+document.getElementById('home').onclick = ()=>{ document.getElementById('q').value=''; selectCat(''); };
+
+document.getElementById('q').addEventListener('input', refresh);
 
 fetch(CSV_URL)
   .then(r=>{ if(!r.ok) throw new Error(r.status); return r.text(); })
-  .then(t=>{ rows = toObjects(parseCSV(t)); render(rows); })
+  .then(t=>{
+    rows = toObjects(parseCSV(t));
+    // 드로어에 카테고리별 수량 표시
+    drawer.querySelectorAll('a[data-cat]').forEach(a=>{
+      const cat = a.dataset.cat;
+      const n = cat ? rows.filter(o=>o.cat.trim()===CATMAP[cat]).length : rows.length;
+      a.insertAdjacentHTML('beforeend', `<span class="n">${n}</span>`);
+    });
+    refresh();
+  })
   .catch(e=>{ view.innerHTML = `<div class="center">불러오지 못했습니다. 시트 공유 설정(링크가 있는 모든 사용자·보기)과 탭 이름 '${esc(CATALOG_TAB)}'을 확인해 주세요.<br><small>${esc(String(e))}</small></div>`; });
 </script>
 </body>
