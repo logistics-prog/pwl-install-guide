@@ -110,7 +110,7 @@ function esc(s){return (s||'').replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>'
 function toObjects(grid){
   if(!grid.length) return [];
   const head = grid[0].map(h=>h.trim());
-  const idx = name => head.findIndex(h=>h.replace(/\s/g,'')===name);
+  const idx = name => head.findIndex(h=>h.replace(/\s/g,'').toLowerCase()===name.toLowerCase());
   const col = {
     brand:idx('브랜드'), cat:idx('카테고리'), name:idx('아티클'),
     img:idx('이미지'), hover:idx('hover'), tag:idx('태그'),
