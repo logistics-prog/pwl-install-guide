@@ -124,16 +124,23 @@
   .modL{right:50%}
   .brk{position:absolute;bottom:28px;left:50%;transform:translateX(-50%);text-align:center}
   .brk .cap{font-size:11px;color:var(--sub);margin-top:3px;font-weight:600}
+  .glide{position:absolute;bottom:16px;right:4%;text-align:center}
+  .glide .gsvg{width:34px}
+  .glide .cap{font-size:11px;color:var(--accent);font-weight:600;margin-top:2px}
+  .gfoot{transform-box:fill-box;transform-origin:center}
   .sim-steps{display:flex;gap:18px;flex-wrap:wrap;margin:16px 2px 0;color:var(--sub);font-size:13.5px}
   .sim-steps b{color:var(--ink)}
   .sim .replay{margin-top:14px}
-  .sim-stage.play .modL{animation:simDrop 1.15s cubic-bezier(.45,.05,.3,1) both}
-  .sim-stage.play .modR{animation:simDrop 1.15s cubic-bezier(.45,.05,.3,1) both;animation-delay:1.2s}
-  .sim-stage.play .brk{animation:simBrk .7s ease both;animation-delay:2.4s}
-  .sim-stage.play .sim-label{animation:simLbl .6s ease both;animation-delay:2.5s}
+  .sim-stage.play .modL{animation:simDrop 1.2s cubic-bezier(.45,.05,.3,1) both}
+  .sim-stage.play .brk{animation:simBrk .6s ease both;animation-delay:1.3s}
+  .sim-stage.play .sim-label{animation:simLbl .6s ease both;animation-delay:1.35s}
+  .sim-stage.play .glide{animation:simGlideIn .5s ease both;animation-delay:2.2s}
+  .sim-stage.play .gfoot{animation:simGlide .8s ease 2.7s 2 both}
   @keyframes simDrop{0%{transform:translateY(-230px);opacity:0}14%{opacity:1}72%{transform:translateY(7px)}100%{transform:translateY(0)}}
   @keyframes simBrk{0%{opacity:0;transform:translateX(-50%) translateY(8px) scale(.7)}70%{opacity:1;transform:translateX(-50%) translateY(0) scale(1.08)}100%{opacity:1;transform:translateX(-50%) scale(1)}}
   @keyframes simLbl{0%{opacity:0}100%{opacity:1}}
+  @keyframes simGlideIn{0%{opacity:0}100%{opacity:1}}
+  @keyframes simGlide{0%,100%{transform:translateY(0)}50%{transform:translateY(4px)}}
   @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
   @media (max-width:600px){.hero h1{font-size:30px}.hero p{font-size:15px}.dtitle{font-size:27px}}
 </style>
@@ -386,11 +393,20 @@ function simHTML(){
       ${sofaSVG('R')}
       ${sofaSVG('L')}
       <div class="brk">${bracketSVG()}<div class="cap">하드웨어 결합</div></div>
+      <div class="glide">
+        <svg class="gsvg" viewBox="0 0 44 56" xmlns="http://www.w3.org/2000/svg">
+          <rect x="18" y="2" width="6" height="28" fill="#2b2b2b"/>
+          <rect class="gfoot" x="13" y="30" width="16" height="8" rx="2" fill="#5c6068"/>
+          <path d="M37 18 V40 M34 22 l3 -4 l3 4 M34 36 l3 4 l3 -4" stroke="#8a6d3b" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <div class="cap">높이조절</div>
+      </div>
     </div>
     <div class="sim-steps">
-      <span><b>1.</b> 왼쪽 모듈 안착</span>
-      <span><b>2.</b> 오른쪽 모듈 안착</span>
-      <span><b>3.</b> 하단 하드웨어 체결</span>
+      <span><b>1.</b> 모듈 안착</span>
+      <span><b>2.</b> 반대 모듈과 맞댄 뒤</span>
+      <span><b>3.</b> 하부 하드웨어 체결</span>
+      <span><b>4.</b> 하단글라이드로 높이조절</span>
     </div>
     <button class="btn ghost replay" id="simReplay">▶ 다시 재생</button>
   </div>`;
