@@ -40,7 +40,7 @@
     box-shadow:-6px 0 24px rgba(0,0,0,.12);transform:translateX(100%);transition:transform .28s ease;
     z-index:21;padding:18px 16px;display:flex;flex-direction:column;gap:2px;overflow-y:auto}
   .drawer.open{transform:translateX(0)}
-  .drawer .brand-head{margin-top:16px;padding-top:16px;border-top:1px solid var(--line)}
+  .drawer .cat-head{margin-top:16px;padding-top:16px;border-top:1px solid var(--line)}
   .drawer .close{align-self:flex-end;border:none;background:none;font-size:24px;line-height:1;
     color:var(--sub);cursor:pointer;padding:2px 6px}
   .drawer h4{margin:2px 6px 12px;font-size:12px;letter-spacing:.1em;color:var(--sub)}
@@ -84,8 +84,53 @@
   .spin{width:26px;height:26px;border:3px solid var(--line);border-top-color:var(--accent);
     border-radius:50%;animation:sp 1s linear infinite;margin:0 auto 14px}
   @keyframes sp{to{transform:rotate(360deg)}}
+  /* ===== 상세 페이지 ===== */
+  .detail{max-width:900px;margin:0 auto;padding:28px 24px 70px}
+  .crumb{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:13px;color:var(--sub);margin-bottom:16px}
+  .crumb a{cursor:pointer;font-weight:600;color:var(--sub);text-decoration:none}
+  .crumb a:hover{color:var(--ink)}
+  .crumb i{font-style:normal;opacity:.5}
+  .crumb span{color:var(--ink);font-weight:600}
+  .dchip{display:inline-block;background:#fff;border:1px solid var(--line);color:var(--accent);
+    font-size:12px;font-weight:700;letter-spacing:.04em;padding:6px 12px;border-radius:20px;margin-bottom:14px}
+  .dtitle{font-size:34px;margin:0 0 12px;letter-spacing:-.02em;text-wrap:balance}
+  .ddesc{color:var(--sub);font-size:16px;max-width:640px;margin:0 0 20px;line-height:1.6}
+  .dmeta{display:flex;flex-wrap:wrap;gap:22px;color:var(--sub);font-size:14px;margin-bottom:22px}
+  .dmeta b{color:var(--ink);font-weight:700;margin-right:4px}
+  .dbtns{display:flex;gap:10px;flex-wrap:wrap}
+  .btn{display:inline-flex;align-items:center;gap:7px;border-radius:24px;padding:11px 20px;
+    font:inherit;font-weight:600;font-size:14px;cursor:pointer;text-decoration:none;border:1px solid var(--line);color:var(--ink)}
+  .btn.dark{background:var(--tag);color:#fff;border-color:var(--tag)}
+  .btn.ghost{background:#fff}
+  .btn.disabled{opacity:.5;pointer-events:none}
+  .drule{border:none;border-top:1px solid var(--line);margin:30px 0}
+  .pdfwrap{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#fff}
+  .pdfwrap iframe{width:100%;height:72vh;border:0;display:block}
+  .dback{margin-top:26px}
+  /* ===== 시뮬레이션 ===== */
+  .sim{background:#fff;border:1px solid var(--line);border-radius:16px;padding:22px}
+  .sim h3{margin:0 0 4px;font-size:18px}
+  .sim .subt{color:var(--sub);font-size:13.5px;margin:0 0 16px}
+  .sim-stage{position:relative;height:270px;background:var(--bg);border-radius:14px;overflow:hidden}
+  .sim-label{position:absolute;top:16px;left:0;right:0;text-align:center;font-size:13px;font-weight:700;color:var(--accent)}
+  .mod{position:absolute;bottom:46px;width:44%;filter:drop-shadow(0 6px 10px rgba(0,0,0,.08))}
+  .modR{right:7%}
+  .modL{left:7%}
+  .brk{position:absolute;bottom:28px;left:50%;transform:translateX(-50%);text-align:center}
+  .brk .cap{font-size:11px;color:var(--sub);margin-top:3px;font-weight:600}
+  .sim-steps{display:flex;gap:18px;flex-wrap:wrap;margin:16px 2px 0;color:var(--sub);font-size:13.5px}
+  .sim-steps b{color:var(--ink)}
+  .sim .replay{margin-top:14px}
+  .sim-stage.play .modL{animation:simDrop 1.5s cubic-bezier(.5,.05,.3,1) both}
+  .sim-stage.play .brk{animation:simBrk 1.7s ease both}
+  .sim-stage.play .sim-label{animation:simLbl 1.8s ease both}
+  @keyframes simDrop{0%{transform:translate(-46px,-190px);opacity:0}18%{opacity:1}
+    55%{transform:translate(-46px,0)}80%,100%{transform:translate(0,0)}}
+  @keyframes simBrk{0%,68%{opacity:0;transform:translateX(-50%) translateY(8px) scale(.7)}
+    86%{opacity:1;transform:translateX(-50%) translateY(0) scale(1.08)}100%{opacity:1;transform:translateX(-50%) scale(1)}}
+  @keyframes simLbl{0%,72%{opacity:0}100%{opacity:1}}
   @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
-  @media (max-width:600px){.hero h1{font-size:30px}.hero p{font-size:15px}}
+  @media (max-width:600px){.hero h1{font-size:30px}.hero p{font-size:15px}.dtitle{font-size:27px}}
 </style>
 </head>
 <body>
@@ -109,7 +154,8 @@
 <div class="scrim" id="scrim"></div>
 <aside class="drawer" id="drawer" aria-label="카테고리">
   <button class="close" id="drawerClose" aria-label="닫기">&times;</button>
-  <h4>카테고리</h4>
+  <div id="brandSection"></div>
+  <h4 class="cat-head">카테고리</h4>
   <a data-cat="" class="active">전체</a>
   <a data-cat="SOFA">SOFA</a>
   <a data-cat="BED">BED</a>
@@ -164,7 +210,8 @@ function toObjects(grid){
     desc:idx('설명'), link:idx('링크'), order:idx('순서'), show:idx('노출')
   };
   const g = (r,k)=> col[k]>=0 ? (r[col[k]]||'').trim() : '';
-  return grid.slice(1).map(r=>({
+  return grid.slice(1).map((r,i)=>({
+    id:i,
     brand:g(r,'brand'), cat:g(r,'cat'), name:g(r,'name'),
     img:g(r,'img'), hover:g(r,'hover'), tag:g(r,'tag'),
     desc:g(r,'desc'), link:g(r,'link'), order:g(r,'order'), show:g(r,'show')
@@ -173,7 +220,6 @@ function toObjects(grid){
 
 function cardHTML(o){
   const linkable = !!o.link;
-  const tagName = linkable ? o.name+' 설치가이드' : o.name;
   const imgBase = o.img
     ? `<img loading="lazy" alt="${esc(o.name)}" src="${esc(o.img)}">`
     : '';
@@ -183,9 +229,7 @@ function cardHTML(o){
   const meta = linkable
     ? `<span>${esc(o.cat||'설치가이드')}</span><span class="arrow">→</span>`
     : `<span>${esc(o.cat||'')}</span><span class="soon">준비중</span>`;
-  const open = linkable ? `<a class="card link" href="${esc(o.link)}" target="_blank" rel="noopener">` : `<div class="card">`;
-  const close = linkable ? `</a>` : `</div>`;
-  return `${open}
+  return `<a class="card link" data-id="${o.id}">
     <div class="card-img">${imgBase}${imgHover}${tag}</div>
     <div class="body">
       <div class="brand">${esc(o.brand)}</div>
@@ -193,7 +237,7 @@ function cardHTML(o){
       <div class="desc">${esc(o.desc)}</div>
     </div>
     <div class="meta">${meta}</div>
-  ${close}`;
+  </a>`;
 }
 
 function render(list){
@@ -210,12 +254,13 @@ function render(list){
       <div class="grid">${items.map(cardHTML).join('')}</div>
     </section>`;
   }).join('');
-  // hover 이미지 지연 로드
+  // hover 지연 로드 + 클릭 시 상세로
   view.querySelectorAll('.card').forEach(c=>{
     c.addEventListener('mouseenter',()=>{
       const h=c.querySelector('.hover[data-src]');
       if(h){ h.src=h.dataset.src; h.removeAttribute('data-src'); }
     },{once:true});
+    c.addEventListener('click',()=>{ location.hash = 'a/'+c.dataset.id; });
   });
 }
 
@@ -262,16 +307,104 @@ document.getElementById('drawerClose').onclick = closeDrawer;
 scrim.onclick = closeDrawer;
 function markCat(){ drawer.querySelectorAll('a[data-cat]').forEach(a=>a.classList.toggle('active', a.dataset.cat===currentCat)); }
 function markBrand(){ drawer.querySelectorAll('a[data-brand]').forEach(a=>a.classList.toggle('active', a.dataset.brand===currentBrand)); }
-function selectCat(cat){ currentCat = cat; markCat(); closeDrawer(); refresh(); window.scrollTo({top:0, behavior:'smooth'}); }
-function selectBrand(brand){ currentBrand = (currentBrand===brand ? '' : brand); markBrand(); closeDrawer(); refresh(); window.scrollTo({top:0, behavior:'smooth'}); }
+function selectCat(cat){ currentCat = cat; markCat(); closeDrawer(); goList(); window.scrollTo({top:0, behavior:'smooth'}); }
+function selectBrand(brand){ currentBrand = (currentBrand===brand ? '' : brand); markBrand(); closeDrawer(); goList(); window.scrollTo({top:0, behavior:'smooth'}); }
 drawer.querySelectorAll('a[data-cat]').forEach(a=>a.onclick = ()=>selectCat(a.dataset.cat));
 
 // 홈(로고) → 첫 화면
 document.getElementById('home').onclick = ()=>{
   document.getElementById('q').value='';
   currentCat=''; currentBrand=''; markCat(); markBrand();
-  closeDrawer(); refresh(); window.scrollTo({top:0, behavior:'smooth'});
+  closeDrawer(); goList(); window.scrollTo({top:0, behavior:'smooth'});
 };
+
+// ===== 상세 페이지 라우팅 =====
+const heroEl = document.querySelector('.hero');
+const filterbarEl = document.getElementById('filterbar');
+let byId = {};
+
+function driveId(url){ const m=(url||'').match(/\/d\/([^/]+)/); return m ? m[1] : ''; }
+function metaRow(v){
+  const items=[['단계',v[0]],['소요',v[1]],['인원',v[2]],['공구',v[3]]];
+  return `<div class="dmeta">`+items.map(x=>`<span><b>${x[0]}</b> ${esc(x[1])}</span>`).join('')+`</div>`;
+}
+function pdfEmbed(id){
+  return id ? `<div class="pdfwrap"><iframe src="https://drive.google.com/file/d/${id}/preview" loading="lazy"></iframe></div>`
+            : `<div class="center">설치가이드 준비중입니다.</div>`;
+}
+function sofaSVG(side){
+  const arm = side==='L'
+    ? `<rect x="6" y="24" width="22" height="74" rx="10" fill="#fff" stroke="#e0dacd"/>`
+    : `<rect x="182" y="24" width="22" height="74" rx="10" fill="#fff" stroke="#e0dacd"/>`;
+  return `<svg class="mod mod${side}" viewBox="0 0 210 130" xmlns="http://www.w3.org/2000/svg">
+    <rect x="14" y="10" width="182" height="52" rx="12" fill="#fff" stroke="#e0dacd"/>
+    <rect x="8" y="54" width="194" height="44" rx="14" fill="#fbfaf6" stroke="#e0dacd"/>
+    <path d="M74 60V92 M140 60V92" stroke="#efe8d9" stroke-width="3"/>
+    ${arm}
+    <rect x="30" y="98" width="7" height="18" rx="1.5" fill="#2b2b2b"/>
+    <rect x="173" y="98" width="7" height="18" rx="1.5" fill="#2b2b2b"/>
+  </svg>`;
+}
+function bracketSVG(){
+  return `<svg viewBox="0 0 90 54" width="76" xmlns="http://www.w3.org/2000/svg">
+    <defs><linearGradient id="mtl" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#eceef1"/><stop offset=".5" stop-color="#bcbfc6"/><stop offset="1" stop-color="#8f939b"/>
+    </linearGradient></defs>
+    <path d="M6 44V14h14v16h50V14h14v30Z" fill="url(#mtl)" stroke="#6f747c" stroke-width="1.5" stroke-linejoin="round"/>
+    <circle cx="13" cy="38" r="2.2" fill="#5c6068"/><circle cx="77" cy="38" r="2.2" fill="#5c6068"/>
+  </svg>`;
+}
+function simHTML(){
+  return `<div class="sim">
+    <h3>설치 시뮬레이션</h3>
+    <p class="subt">왼쪽 모듈을 내려 오른쪽 모듈과 맞댄 뒤, 하단을 브래킷으로 결합합니다.</p>
+    <div class="sim-stage play" id="simStage">
+      <div class="sim-label">① 두 모듈을 맞대고 하단을 브래킷으로 체결</div>
+      ${sofaSVG('R')}
+      ${sofaSVG('L')}
+      <div class="brk">${bracketSVG()}<div class="cap">브래킷 결합</div></div>
+    </div>
+    <div class="sim-steps">
+      <span><b>1.</b> 오른쪽 모듈 고정</span>
+      <span><b>2.</b> 왼쪽 모듈 정렬·안착</span>
+      <span><b>3.</b> 하단 브래킷 체결</span>
+    </div>
+    <button class="btn ghost replay" id="simReplay">▶ 다시 재생</button>
+  </div>`;
+}
+function detailHTML(o){
+  const isTartan = o.name.toUpperCase().includes('TARTAN');
+  const id = driveId(o.link);
+  const pdfBtn = o.link
+    ? `<a class="btn dark" href="${esc(o.link)}" target="_blank" rel="noopener">📄 원본 PDF</a>`
+    : `<span class="btn dark disabled">준비중</span>`;
+  const chip = o.tag ? esc(o.tag) : esc(`${o.brand} · ${o.cat}`);
+  const meta = isTartan ? metaRow(['3 단계','10–15분','2인 권장','없음']) : '';
+  const body = isTartan ? simHTML() : pdfEmbed(id);
+  return `<div class="detail">
+    <nav class="crumb"><a data-home>설치가이드</a><i>›</i><a data-cbrand>${esc(o.brand)}</a><i>›</i><span>${esc(o.name)}</span></nav>
+    <div class="dchip">${chip}</div>
+    <h1 class="dtitle">${esc(o.name)}</h1>
+    ${o.desc?`<p class="ddesc">${esc(o.desc)}</p>`:''}
+    ${meta}
+    <div class="dbtns">${pdfBtn}</div>
+    <hr class="drule">
+    ${body}
+    <div class="dback"><button class="btn ghost" data-back>← 목록으로</button></div>
+  </div>`;
+}
+function wireDetail(o){
+  view.querySelector('[data-home]')?.addEventListener('click', ()=>{ location.hash=''; });
+  view.querySelector('[data-cbrand]')?.addEventListener('click', ()=>selectBrand(o.brand));
+  view.querySelector('[data-back]')?.addEventListener('click', ()=>{ location.hash=''; });
+  const rep=view.querySelector('#simReplay'), stage=view.querySelector('#simStage');
+  if(rep && stage) rep.onclick=()=>{ stage.classList.remove('play'); void stage.offsetWidth; stage.classList.add('play'); };
+}
+function showList(){ heroEl.hidden=false; filterbarEl.hidden=false; refresh(); }
+function showDetail(o){ heroEl.hidden=true; filterbarEl.hidden=true; view.innerHTML=detailHTML(o); wireDetail(o); window.scrollTo({top:0}); }
+function goList(){ if(location.hash) location.hash=''; else showList(); }
+function route(){ const m=(location.hash||'').match(/^#a\/(\d+)/); if(m && byId[m[1]]) showDetail(byId[m[1]]); else showList(); }
+window.addEventListener('hashchange', route);
 
 document.getElementById('q').addEventListener('input', refresh);
 
@@ -279,21 +412,21 @@ fetch(CSV_URL)
   .then(r=>{ if(!r.ok) throw new Error(r.status); return r.text(); })
   .then(t=>{
     rows = toObjects(parseCSV(t));
+    byId = {}; rows.forEach(o=>byId[o.id]=o);
     // 카테고리별 수량
     drawer.querySelectorAll('a[data-cat]').forEach(a=>{
       const cat = a.dataset.cat;
       const n = cat ? rows.filter(o=>o.cat.trim()===CATMAP[cat]).length : rows.length;
       a.insertAdjacentHTML('beforeend', `<span class="n">${n}</span>`);
     });
-    // 브랜드 목록 (가나다·ABC 순)
+    // 브랜드 목록 (가나다·ABC 순) — 카테고리 위에 표시
     const bcount = {};
     rows.forEach(o=>{ const b=o.brand.trim(); if(b) bcount[b]=(bcount[b]||0)+1; });
     const brands = Object.keys(bcount).sort((a,b)=>a.localeCompare(b,'ko'));
-    const bhtml = `<h4 class="brand-head">브랜드</h4>` +
+    document.getElementById('brandSection').innerHTML = `<h4>브랜드</h4>` +
       brands.map(b=>`<a data-brand="${esc(b)}">${esc(b)}<span class="n">${bcount[b]}</span></a>`).join('');
-    drawer.insertAdjacentHTML('beforeend', bhtml);
     drawer.querySelectorAll('a[data-brand]').forEach(a=>a.onclick = ()=>selectBrand(a.dataset.brand));
-    refresh();
+    route();
   })
   .catch(e=>{ view.innerHTML = `<div class="center">불러오지 못했습니다. 시트 공유 설정(링크가 있는 모든 사용자·보기)과 탭 이름 '${esc(CATALOG_TAB)}'을 확인해 주세요.<br><small>${esc(String(e))}</small></div>`; });
 </script>
