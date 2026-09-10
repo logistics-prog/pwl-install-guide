@@ -131,6 +131,17 @@
   .sim-steps{display:flex;gap:18px;flex-wrap:wrap;margin:16px 2px 0;color:var(--sub);font-size:13.5px}
   .sim-steps b{color:var(--ink)}
   .sim .replay{margin-top:14px}
+  /* ===== 모듈 구성 ===== */
+  .modguide{margin-top:26px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:22px}
+  .modguide h3{margin:0 0 4px;font-size:18px}
+  .modguide .subt{color:var(--sub);font-size:13.5px;margin:0 0 18px}
+  .mg-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(196px,1fr));gap:14px}
+  .mg-card{border:1px solid var(--line);border-radius:12px;padding:12px 12px 14px;text-align:center;background:var(--bg)}
+  .mg-img{background:#fff;border:1px solid var(--line);border-radius:8px;padding:10px;min-height:82px;
+    display:flex;align-items:center;justify-content:center}
+  .mg-svg{width:100%;height:auto;max-height:66px}
+  .mg-name{margin-top:10px;font-size:14px;font-weight:700}
+  .mg-sub{font-size:12px;color:var(--sub);margin-top:3px}
   .sim-stage.play .modL{animation:simDrop 1.2s cubic-bezier(.45,.05,.3,1) both}
   .sim-stage.play .brk{animation:simBrk .6s ease both;animation-delay:1.3s}
   .sim-stage.play .sim-label{animation:simLbl .6s ease both;animation-delay:1.35s}
@@ -411,6 +422,69 @@ function simHTML(){
     <button class="btn ghost replay" id="simReplay">▶ 다시 재생</button>
   </div>`;
 }
+// ===== 모듈 구성 가이드 (TARTAN) =====
+const TARTAN_MODULES = [
+  {name:'암레스트 좌/우', sub:'암레스트 ×1', mods:['armL']},
+  {name:'암레스트 라운지', sub:'라운지 ×1', mods:['lounge']},
+  {name:'미들', sub:'미들 ×1', mods:['mid']},
+  {name:'소파 3인 좌형', sub:'암레스트 좌형 · 미들', mods:['armL','mid']},
+  {name:'소파 3인 우형', sub:'미들 · 암레스트 우형', mods:['mid','armR']},
+  {name:'소파 3인 코너 좌형', sub:'암레스트 우형 ×2', mods:['armR','armR']},
+  {name:'소파 3인 코너 우형', sub:'암레스트 좌형 ×2', mods:['armL','armL']},
+  {name:'소파 3인 B 좌형', sub:'코너 ×1 · 암레스트 좌형 ×1', mods:['corner','armL']},
+  {name:'소파 3인 B 우형', sub:'암레스트 우형 ×1 · 코너 ×1', mods:['armR','corner']},
+  {name:'소파 4인 A', sub:'암레스트 좌형 · 암레스트 우형', mods:['armL','armR']},
+  {name:'소파 4인 B', sub:'암레스트 라운지 ×2', mods:['lounge','lounge']},
+  {name:'소파 4인 코너 A 좌형', sub:'암레스트 좌형 · 암레스트 라운지', mods:['armL','lounge']},
+  {name:'소파 4인 코너 A 우형', sub:'암레스트 라운지 · 암레스트 우형', mods:['lounge','armR']},
+  {name:'소파 4인 코너 B 좌형', sub:'암레스트 우형 ×2 · 미들', mods:['armR','armR','mid']},
+  {name:'소파 4인 코너 B 우형', sub:'암레스트 좌형 ×2 · 미들', mods:['armL','armL','mid']},
+  {name:'소파 5인', sub:'암레스트 좌형 · 미들 · 암레스트 우형', mods:['armL','mid','armR']},
+  {name:'쿠션 S / L', sub:'쿠션 ×1', mods:['cushion']}
+];
+// 모듈 폭(방석 넓이 차이): 코너=좁게, 암레스트=중간, 라운지=넓게
+const MW = {mid:112, armL:120, armR:120, corner:96, lounge:152, cushion:84};
+function mPartX(x,key,w,side){
+  const C='#efe7da', L='#d8cfbe', K='#2b2b2b';
+  const g=s=>`<g transform="translate(${x},0)">${s}</g>`;
+  if(key==='cushion') return g(`<rect x="${(w-64)/2}" y="32" width="64" height="60" rx="12" fill="${C}" stroke="${L}"/>`);
+  const a=20, hasL=side==='L', hasR=side==='R', low=key==='lounge';
+  const inX = hasL? a:3, inR = hasR? w-a : w-3, inW = inR-inX;
+  const backY = low?42:20, backH = low?22:42;
+  const back = `<rect x="${inX+3}" y="${backY}" width="${inW-6}" height="${backH}" rx="10" fill="${C}" stroke="${L}"/>`;
+  const seatY = low?56:56, seatH = low?48:40;
+  const seat = `<rect x="${inX-1}" y="${seatY}" width="${inW+2}" height="${seatH}" rx="12" fill="${C}" stroke="${L}"/>`;
+  const arm = hasL? `<rect x="3" y="30" width="${a-3}" height="66" rx="9" fill="${C}" stroke="${L}"/>`
+            : hasR? `<rect x="${w-a}" y="30" width="${a-3}" height="66" rx="9" fill="${C}" stroke="${L}"/>` : '';
+  const legY = seatY+seatH, lx1=inX+8, lx2=inR-14;
+  const legs = `<rect x="${lx1}" y="${legY}" width="6" height="14" rx="1.5" fill="${K}"/><rect x="${lx2}" y="${legY}" width="6" height="14" rx="1.5" fill="${K}"/>`;
+  return g(back+seat+arm+legs);
+}
+function composeModules(mods){
+  let x=0; const parts=[];
+  mods.forEach((k,i)=>{
+    const side = k==='armL'?'L' : k==='armR'?'R' : (k==='mid'||k==='cushion')?'none'
+               : (i===mods.length-1 && i!==0 ? 'R':'L');  // 코너·라운지: 바깥쪽 팔걸이
+    const w = MW[k]||112;
+    parts.push(mPartX(x,k,w,side));
+    x += w;
+  });
+  return `<svg viewBox="0 0 ${x} 118" class="mg-svg" xmlns="http://www.w3.org/2000/svg">${parts.join('')}</svg>`;
+}
+function moduleGuideHTML(){
+  return `<div class="modguide">
+    <h3>모듈 구성</h3>
+    <p class="subt">제품별 구성 모듈입니다. (×2 = 해당 모듈 2개 · 표기 없음/×1 = 1개)</p>
+    <div class="mg-grid">
+      ${TARTAN_MODULES.map(m=>`<div class="mg-card">
+        <div class="mg-img">${composeModules(m.mods)}</div>
+        <div class="mg-name">${esc(m.name)}</div>
+        <div class="mg-sub">${esc(m.sub)}</div>
+      </div>`).join('')}
+    </div>
+  </div>`;
+}
+
 function detailHTML(o){
   const isTartan = o.name.toUpperCase().includes('TARTAN');
   const id = driveId(o.link);
@@ -419,7 +493,7 @@ function detailHTML(o){
     : `<span class="btn dark disabled">준비중</span>`;
   const chip = o.tag ? esc(o.tag) : esc(`${o.brand} · ${o.cat}`);
   const meta = metaRow([o.step,o.time,o.people,o.tool]);
-  const body = isTartan ? simHTML() : pdfEmbed(id);
+  const body = isTartan ? (simHTML()+moduleGuideHTML()) : pdfEmbed(id);
   return `<div class="detail">
     <nav class="crumb"><a data-home>설치가이드</a><i>›</i><a data-cbrand>${esc(o.brand)}</a><i>›</i><span>${esc(o.name)}</span></nav>
     <div class="dchip">${chip}</div>
