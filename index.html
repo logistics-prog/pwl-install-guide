@@ -546,6 +546,11 @@ function pebbleSimHTML(sub){
   ];
   const hwSVG=hws.map(h=>`<g class="phw phw${h.n}"><rect x="${h.x-11}" y="${h.y-9}" width="22" height="18" rx="5" fill="#26241f"/><text x="${h.x}" y="${h.y+4}" text-anchor="middle" font-size="12" font-weight="700" fill="#fff" font-family="Pretendard,sans-serif">${h.n}</text></g>`).join('');
   const threeD=`<svg viewBox="0 0 420 210" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="pbBody" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#efe8da"/><stop offset="1" stop-color="#e2dac8"/></linearGradient>
+      <linearGradient id="pbSeat" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f7f2e9"/><stop offset="1" stop-color="#ede6d6"/></linearGradient>
+      <filter id="pbSh" x="-30%" y="-30%" width="160%" height="185%"><feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#4a4436" flood-opacity=".18"/></filter>
+    </defs>
     <!-- 발 (쿠션 뒤에 깔림) -->
     <g fill="#211f1e">
       <rect x="26" y="130" width="15" height="16" rx="3"/><rect x="61" y="130" width="15" height="16" rx="3"/>
@@ -553,15 +558,18 @@ function pebbleSimHTML(sub){
       <rect x="214" y="150" width="15" height="16" rx="3"/><rect x="346" y="150" width="15" height="16" rx="3"/>
       <rect x="343" y="130" width="15" height="16" rx="3"/><rect x="378" y="130" width="15" height="16" rx="3"/>
     </g>
-    <!-- 등받이 2 (동일 높이·가운데 노치) -->
-    <rect x="108" y="16" width="104" height="78" rx="26" fill="#e9e1d2" stroke="#c8bda6" stroke-width="2.5"/>
-    <rect x="216" y="16" width="104" height="78" rx="26" fill="#e9e1d2" stroke="#c8bda6" stroke-width="2.5"/>
-    <!-- 팔걸이 2 (낮음) -->
-    <rect x="16" y="42" width="70" height="96" rx="32" fill="#e9e1d2" stroke="#c8bda6" stroke-width="2.5"/>
-    <rect x="334" y="42" width="70" height="96" rx="32" fill="#e9e1d2" stroke="#c8bda6" stroke-width="2.5"/>
-    <!-- 시트 2 (앞 돌출, 우측 크고 밝음) -->
-    <rect x="86" y="74" width="120" height="86" rx="28" fill="#e9e1d2" stroke="#c8bda6" stroke-width="2.5"/>
-    <rect x="206" y="78" width="160" height="82" rx="30" fill="#f4efe4" stroke="#c8bda6" stroke-width="2.5"/>
+    <!-- 등받이 2 + 팔걸이 2 -->
+    <g filter="url(#pbSh)">
+      <rect x="108" y="16" width="104" height="80" rx="28" fill="url(#pbBody)" stroke="#dcd2bf" stroke-width="1.5"/>
+      <rect x="216" y="16" width="104" height="80" rx="28" fill="url(#pbBody)" stroke="#dcd2bf" stroke-width="1.5"/>
+      <rect x="16" y="42" width="70" height="98" rx="33" fill="url(#pbBody)" stroke="#dcd2bf" stroke-width="1.5"/>
+      <rect x="334" y="42" width="70" height="98" rx="33" fill="url(#pbBody)" stroke="#dcd2bf" stroke-width="1.5"/>
+    </g>
+    <!-- 시트 2 (앞 돌출, 밝음) -->
+    <g filter="url(#pbSh)">
+      <rect x="86" y="74" width="122" height="88" rx="30" fill="url(#pbSeat)" stroke="#dcd2bf" stroke-width="1.5"/>
+      <rect x="204" y="78" width="162" height="84" rx="32" fill="url(#pbSeat)" stroke="#dcd2bf" stroke-width="1.5"/>
+    </g>
   </svg>`;
   return `<div class="sim">
     <h3>설치 시뮬레이션</h3>
@@ -571,12 +579,12 @@ function pebbleSimHTML(sub){
         <svg viewBox="0 0 420 210" xmlns="http://www.w3.org/2000/svg">${modSVG}${hwSVG}</svg>
         <div class="psim-cap">단면도(하부) — 모듈 배치 후 하드웨어 ①~⑧ 체결</div>
       </div>
-      <div class="psim-3d">${threeD}<div class="psim-cap">입체 완성</div></div>
+      <div class="psim-3d">${threeD}<div class="psim-cap">바로 세워 완성</div></div>
     </div>
     <div class="sim-steps">
       <span><b>1.</b> 왼쪽부터 6개 모듈 배치</span>
       <span><b>2.</b> 하드웨어 ①~⑧ 순서대로 체결</span>
-      <span><b>3.</b> 입체 완성</span>
+      <span><b>3.</b> 바로 세워 완성</span>
     </div>
     <p class="psim-hw">하드웨어 필요수량 — 2구 ×2 · 3구 ×6</p>
     <button class="btn ghost replay" id="simReplay">▶ 다시 재생</button>
