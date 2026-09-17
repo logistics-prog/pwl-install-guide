@@ -186,6 +186,13 @@
   @keyframes p3d{0%,86%{opacity:0}95%,100%{opacity:1}}
   @keyframes pIn{0%{opacity:0}100%{opacity:1}}
   @keyframes pPop{0%{opacity:0;transform:scale(.4)}60%{opacity:1;transform:scale(1.15)}100%{opacity:1;transform:scale(1)}}
+  /* ===== 단순배송(상자 개봉 → 꺼내 배치) ===== */
+  .dsvg{width:100%;height:100%;display:block}
+  .dchair{transform-box:fill-box;transform-origin:center}
+  .psim-stage.play .dbox{animation:dIn .5s ease both}
+  .psim-stage.play .dchair{animation:dChair 2.8s cubic-bezier(.4,.05,.3,1) .9s both}
+  @keyframes dIn{0%{opacity:0}100%{opacity:1}}
+  @keyframes dChair{0%{opacity:0;transform:translate(-150px,48px) scale(.72)}12%{opacity:1}40%{transform:translate(-150px,-26px) scale(1)}72%,100%{transform:translate(0,0) scale(1)}}
   /* ===== 모듈 구성 ===== */
   .modguide{margin-top:26px;background:var(--panel);border:1px solid var(--panel-line);border-radius:16px;padding:22px}
   .modguide h3{margin:0 0 4px;font-size:18px}
@@ -567,6 +574,46 @@ function pebbleSimHTML(sub){
   </div>`;
 }
 
+// ===== 단순배송 시뮬레이션 (상자 개봉 → 꺼내 배치) =====
+function deliverySimHTML(sub){
+  const desc = sub ? `<p class="subt">${esc(sub).replace(/\n/g,'<br>')}</p>` : '';
+  const box = `<g class="dbox">
+    <polygon points="96,112 150,112 138,84 108,84" fill="#cbb385" stroke="#b89b73" stroke-width="2"/>
+    <polygon points="96,112 82,82 64,94 84,116" fill="#d6bf98" stroke="#b89b73" stroke-width="2"/>
+    <polygon points="150,112 164,82 182,94 162,116" fill="#d6bf98" stroke="#b89b73" stroke-width="2"/>
+    <rect x="84" y="110" width="82" height="70" rx="4" fill="#dcc7a8" stroke="#b89b73" stroke-width="2.5"/>
+    <rect x="90" y="110" width="70" height="12" rx="3" fill="#b89b73" opacity=".45"/>
+    <rect x="110" y="142" width="30" height="18" rx="2" fill="#efe6d3" stroke="#c9b48c" stroke-width="1.5"/>
+  </g>`;
+  const chair = `<g class="dchair">
+    <rect x="274" y="56" width="66" height="80" rx="30" fill="#e9e1d2" stroke="#c8bda6" stroke-width="2.5"/>
+    <rect x="256" y="116" width="94" height="22" rx="11" fill="#efe8da" stroke="#c8bda6" stroke-width="2.5"/>
+    <g stroke="#9a9a9a" stroke-width="4" stroke-linecap="round">
+      <line x1="270" y1="134" x2="256" y2="176"/><line x1="290" y1="134" x2="298" y2="176"/>
+      <line x1="330" y1="134" x2="322" y2="176"/><line x1="348" y1="134" x2="362" y2="176"/>
+    </g>
+    <g fill="#2b2b2b"><rect x="252" y="174" width="9" height="7" rx="2"/><rect x="294" y="174" width="9" height="7" rx="2"/><rect x="318" y="174" width="9" height="7" rx="2"/><rect x="358" y="174" width="9" height="7" rx="2"/></g>
+  </g>`;
+  return `<div class="sim">
+    <h3>설치 시뮬레이션</h3>
+    ${desc}
+    <div class="psim-stage play" id="simStage">
+      <svg class="dsvg" viewBox="0 0 420 210" xmlns="http://www.w3.org/2000/svg">
+        <ellipse cx="308" cy="182" rx="72" ry="8" fill="#000" opacity=".06"/>
+        ${box}
+        ${chair}
+      </svg>
+      <div class="psim-cap">단순배송 — 상자에서 꺼내 그대로 배치</div>
+    </div>
+    <div class="sim-steps">
+      <span><b>1.</b> 상자 개봉</span>
+      <span><b>2.</b> 제품 꺼내기</span>
+      <span><b>3.</b> 그대로 배치</span>
+    </div>
+    <button class="btn ghost replay" id="simReplay">▶ 다시 재생</button>
+  </div>`;
+}
+
 // ===== 모듈 구성 가이드 (TARTAN) =====
 const TARTAN_MODULES = [
   {name:'암레스트 좌/우', sub:'암레스트', mods:['armL']},
@@ -654,6 +701,7 @@ function faqHTML(o){
 function detailHTML(o){
   const isTartan = o.name.toUpperCase().includes('TARTAN');
   const isPebble = o.name.toUpperCase().includes('PEBBLE');
+  const isPetalo = o.name.toUpperCase().includes('PETALO');
   const id = driveId(o.link);
   const pdfBtn = o.link
     ? `<a class="btn dark" href="${esc(o.link)}" target="_blank" rel="noopener">📄 조립설명서 PDF</a>`
@@ -662,6 +710,7 @@ function detailHTML(o){
   const meta = metaRow([o.step,o.time,o.people,o.tool]);
   const body = isTartan ? (simHTML(o.simdesc)+faqHTML(o)+moduleGuideHTML())
              : isPebble ? (pebbleSimHTML(o.simdesc)+faqHTML(o))
+             : isPetalo ? (deliverySimHTML(o.simdesc)+faqHTML(o))
              : (pdfEmbed(id)+faqHTML(o));
   return `<div class="detail">
     <nav class="crumb"><a data-home>설치가이드</a><i>›</i><a data-cbrand>${esc(o.brand)}</a><i>›</i><span>${esc(o.name)}</span></nav>
