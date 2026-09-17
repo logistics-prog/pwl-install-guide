@@ -325,7 +325,8 @@ function toObjects(grid){
     detail:idx('상세'),
     step:idx('단계'), time:idx('소요'), people:idx('인원'), tool:idx('공구'),
     simdesc:idx('시뮬설명'),
-    ko1:idx('한글명1'), ko2:idx('한글명2')
+    ko1:idx('한글명1'), ko2:idx('한글명2'),
+    sim:idx('시뮬')
   };
   const g = (r,k)=> col[k]>=0 ? (r[col[k]]||'').trim() : '';
   return grid.slice(1).map((r,i)=>({
@@ -336,7 +337,8 @@ function toObjects(grid){
     detail:g(r,'detail'),
     step:g(r,'step'), time:g(r,'time'), people:g(r,'people'), tool:g(r,'tool'),
     simdesc:g(r,'simdesc'),
-    ko1:g(r,'ko1'), ko2:g(r,'ko2')
+    ko1:g(r,'ko1'), ko2:g(r,'ko2'),
+    sim:g(r,'sim')
   })).filter(o=>o.name && o.show.toUpperCase()!=='N');
 }
 
@@ -706,18 +708,20 @@ function faqHTML(o){
 }
 
 function detailHTML(o){
-  const isTartan = o.name.toUpperCase().includes('TARTAN');
-  const isPebble = o.name.toUpperCase().includes('PEBBLE');
-  const isPetalo = o.name.toUpperCase().includes('PETALO');
+  // 시뮬레이션 선택: 시트 '시뮬' 열 값으로 지정(TARTAN / PEBBLE / 체어단순배송). 비어있으면 아티클명으로 자동 판정
+  const st = (o.sim||'').replace(/\s/g,''); const U = o.name.toUpperCase();
+  const useTartan   = st.toUpperCase()==='TARTAN' || (!st && U.includes('TARTAN'));
+  const usePebble   = st.toUpperCase()==='PEBBLE' || (!st && U.includes('PEBBLE'));
+  const useDelivery = st.includes('단순배송')      || (!st && U.includes('PETALO'));
   const id = driveId(o.link);
   const pdfBtn = o.link
     ? `<a class="btn dark" href="${esc(o.link)}" target="_blank" rel="noopener">📄 조립설명서 PDF</a>`
     : `<span class="btn dark disabled">준비중</span>`;
   const chip = o.tag ? esc(o.tag) : esc(`${o.brand} · ${o.cat}`);
   const meta = metaRow([o.step,o.time,o.people,o.tool]);
-  const body = isTartan ? (simHTML(o.simdesc)+faqHTML(o)+moduleGuideHTML())
-             : isPebble ? (pebbleSimHTML(o.simdesc)+faqHTML(o))
-             : isPetalo ? (deliverySimHTML(o.simdesc)+faqHTML(o))
+  const body = useTartan ? (simHTML(o.simdesc)+faqHTML(o)+moduleGuideHTML())
+             : usePebble ? (pebbleSimHTML(o.simdesc)+faqHTML(o))
+             : useDelivery ? (deliverySimHTML(o.simdesc)+faqHTML(o))
              : (pdfEmbed(id)+faqHTML(o));
   return `<div class="detail">
     <nav class="crumb"><a data-home>설치가이드</a><i>›</i><a data-cbrand>${esc(o.brand)}</a><i>›</i><span>${esc(o.name)}</span></nav>
