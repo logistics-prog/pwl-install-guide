@@ -101,6 +101,7 @@
     border-top:1px solid var(--line);margin-top:12px;padding:11px 16px;font-size:13px;color:var(--sub)}
   .meta .arrow{font-size:16px;color:var(--ink)}
   .meta .soon{color:var(--accent);font-weight:600}
+  .meta .none{color:var(--sub);font-weight:600}
   .center{max-width:1040px;margin:60px auto;text-align:center;color:var(--sub);padding:0 24px}
   .spin{width:26px;height:26px;border:3px solid var(--line);border-top-color:var(--accent);
     border-radius:50%;animation:sp 1s linear infinite;margin:0 auto 14px}
@@ -350,8 +351,12 @@ function cardHTML(o){
   const imgHover = o.hover
     ? `<img class="hover" alt="" data-src="${esc(o.hover)}">` : '';
   const tag = o.tag ? `<span class="tag">${esc(o.tag)}</span>` : '';
-  const meta = linkable
+  const lv = (o.link||'').trim();
+  const hasGuide = /^https?:\/\//i.test(lv);
+  const noGuide  = /^(불필요|없음|x|해당없음|불필요함)$/i.test(lv);
+  const meta = hasGuide
     ? `<span>${esc(o.cat||'설치가이드')}</span><span class="arrow">→</span>`
+    : noGuide ? `<span>${esc(o.cat||'')}</span><span class="none">단순개봉</span>`
     : `<span>${esc(o.cat||'')}</span><span class="soon">준비중</span>`;
   return `<a class="card link" data-id="${o.id}">
     <div class="card-img">${imgBase}${imgHover}${tag}</div>
@@ -713,16 +718,24 @@ function detailHTML(o){
   const useTartan   = st.toUpperCase()==='TARTAN' || (!st && U.includes('TARTAN'));
   const usePebble   = st.toUpperCase()==='PEBBLE' || (!st && U.includes('PEBBLE'));
   const useDelivery = st.includes('단순배송')      || (!st && U.includes('PETALO'));
-  const id = driveId(o.link);
-  const pdfBtn = o.link
-    ? `<a class="btn dark" href="${esc(o.link)}" target="_blank" rel="noopener">📄 조립설명서 PDF</a>`
+  // 링크(H열): URL이면 조립설명서, "불필요/없음"이면 안내, 비어있으면 준비중
+  const lv = (o.link||'').trim();
+  const hasGuide = /^https?:\/\//i.test(lv);
+  const noGuide  = /^(불필요|없음|x|해당없음|불필요함)$/i.test(lv);
+  const id = hasGuide ? driveId(lv) : '';
+  const pdfBtn = hasGuide
+    ? `<a class="btn dark" href="${esc(lv)}" target="_blank" rel="noopener">📄 조립설명서 PDF</a>`
+    : noGuide ? ''
     : `<span class="btn dark disabled">준비중</span>`;
   const chip = o.tag ? esc(o.tag) : esc(`${o.brand} · ${o.cat}`);
   const meta = metaRow([o.step,o.time,o.people,o.tool]);
+  const defBody = hasGuide ? pdfEmbed(id)
+    : noGuide ? `<div class="center"><b style="font-size:17px;color:var(--ink)">단순개봉 후 배치</b><br><span style="font-size:13.5px">별도 조립 없이 상자 개봉 후 그대로 사용하세요.</span></div>`
+    : `<div class="center">설치가이드 준비중입니다.</div>`;
   const body = useTartan ? (simHTML(o.simdesc)+faqHTML(o)+moduleGuideHTML())
              : usePebble ? (pebbleSimHTML(o.simdesc)+faqHTML(o))
              : useDelivery ? (deliverySimHTML(o.simdesc)+faqHTML(o))
-             : (pdfEmbed(id)+faqHTML(o));
+             : (defBody+faqHTML(o));
   return `<div class="detail">
     <nav class="crumb"><a data-home>설치가이드</a><i>›</i><a data-cbrand>${esc(o.brand)}</a><i>›</i><span>${esc(o.name)}</span></nav>
     <div class="dchip">${chip}</div>
