@@ -757,7 +757,7 @@ function cautionHTML(o){
   const list=cautionRows.filter(c=> nz(c.article) && nz(c.brand)===nz(o.brand) && nz(o.name).includes(nz(c.article)))
     .sort((a,b)=>(Number(a.order||1e9))-(Number(b.order||1e9)));
   if(!list.length) return '';
-  return `<div class="caution"><h3>제품별 설치 주의사항</h3>`+
+  return `<div class="caution"><h3>설치 주의사항</h3>`+
     list.map(c=>{
       const summ = c.title || c.issue || '주의사항';
       const img = c.img ? `<div class="ct-img"><img class="ct-photo" src="${esc(imgSrc(c.img))}" alt="" loading="lazy"></div>` : '';
