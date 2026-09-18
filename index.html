@@ -217,6 +217,18 @@
   .faq-a{padding:2px 16px 15px;color:var(--ink);font-size:14px;line-height:1.7}
   .faq-a p{margin:0 0 10px}
   .faq-a a{color:var(--accent);word-break:break-all}
+  /* 제품별 설치 주의사항 (FAQ 스타일 공유) */
+  .caution{margin-top:26px;background:var(--panel);border:1px solid var(--panel-line);border-radius:16px;padding:22px}
+  .caution h3{margin:0 0 14px;font-size:18px}
+  .ct-row{display:flex;gap:16px;align-items:flex-start}
+  .ct-img{flex:0 0 42%;max-width:240px}
+  .ct-photo{width:100%;border-radius:10px;border:1px solid var(--line);display:block}
+  .ct-text{flex:1;min-width:0}
+  @media(max-width:560px){.ct-row{flex-direction:column}.ct-img{flex-basis:auto;max-width:100%}}
+  .ct-field{margin:0 0 12px}
+  .ct-field:last-child{margin-bottom:0}
+  .ct-field b{display:block;font-size:13px;color:var(--accent);margin-bottom:3px}
+  .rich-img{display:block;max-width:100%;border-radius:8px;margin:8px 0;border:1px solid var(--line)}
   .sim-stage.play .modL{animation:simDrop 1.2s cubic-bezier(.45,.05,.3,1) both}
   .sim-stage.play .brk{animation:simBrk .6s ease both;animation-delay:1.3s}
   .sim-stage.play .sim-label{animation:simLbl .6s ease both;animation-delay:1.35s}
@@ -270,6 +282,7 @@
 const SHEET_ID = '1paHLmKICvQ7EAlh07nir9-9BPW_VEHIzcesS4JRJ1LU';
 const CATALOG_TAB = '카탈로그';   // 카탈로그 탭
 const FAQ_TAB = 'FAQ';           // FAQ 탭 (열: 브랜드 아티클 질문 답변 순서)
+const CAUTION_TAB = '주의사항';   // 주의사항 탭 (열: 브랜드 아티클 이슈사항 조치요청 리뷰 순서)
 // 열 헤더(순서 무관, 이름으로 인식): 브랜드 카테고리 아티클 이미지 hover 태그 설명 링크 순서 노출 상세 단계 소요 인원 공구
 // ================
 
@@ -278,6 +291,7 @@ const CSV_URL = csvUrl(CATALOG_TAB);
 const view = document.getElementById('view');
 let rows = [];
 let faqRows = [];
+let cautionRows = [];
 
 // --- CSV 파서 (따옴표·줄바꿈 안전) ---
 function parseCSV(text){
@@ -302,7 +316,9 @@ function parseCSV(text){
 function esc(s){return (s||'').replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));}
 // 상세 본문: 빈 줄=문단, 줄바꿈=<br>, URL 자동링크, 줄머리 "# "=소제목
 function fmtBody(t){
-  const link = s => s.replace(/(https?:\/\/[^\s<]+)/g,'<a href="$1" target="_blank" rel="noopener">$1</a>');
+  const link = s => s.replace(/(https?:\/\/[^\s<]+)/g, url => /\.(png|jpe?g|webp|gif)(\?|$)/i.test(url)
+    ? `<img class="rich-img" src="${url}" alt="" loading="lazy">`
+    : `<a href="${url}" target="_blank" rel="noopener">${url}</a>`);
   const lines = esc(t).replace(/\r/g,'').split('\n');
   let html='', buf=[];
   const flush = ()=>{ if(buf.length){ html+=`<p>${buf.join('<br>')}</p>`; buf=[]; } };
@@ -712,6 +728,38 @@ function faqHTML(o){
     `</div>`;
 }
 
+// ===== 제품별 설치 주의사항 =====
+function toCaution(grid){
+  if(!grid.length) return [];
+  const head=grid[0];
+  const clean=h=>(h||'').replace(/\s/g,'').toLowerCase();
+  const idx=n=>head.findIndex(h=>clean(h).startsWith(n.toLowerCase()));
+  const pick=(...ns)=>{ for(const n of ns){ const i=idx(n); if(i>=0) return i; } return -1; };
+  const c={brand:idx('브랜드'), art:idx('아티클'), title:pick('제목'), img:pick('이미지'),
+    issue:pick('자주발생','이슈'), action:pick('조치'), review:pick('리뷰'), order:pick('순서')};
+  const g=(r,k)=> c[k]>=0 ? (r[c[k]]||'').trim() : '';
+  return grid.slice(1).map(r=>({brand:g(r,'brand'), article:g(r,'art'), title:g(r,'title'), img:g(r,'img'),
+    issue:g(r,'issue'), action:g(r,'action'), review:g(r,'review'), order:g(r,'order')}))
+    .filter(x=>x.title||x.issue||x.action||x.review);
+}
+function cautionHTML(o){
+  const nz=s=>(s||'').replace(/\s/g,'').toLowerCase();
+  const list=cautionRows.filter(c=> nz(c.article) && nz(c.brand)===nz(o.brand) && nz(o.name).includes(nz(c.article)))
+    .sort((a,b)=>(Number(a.order||1e9))-(Number(b.order||1e9)));
+  if(!list.length) return '';
+  return `<div class="caution"><h3>제품별 설치 주의사항</h3>`+
+    list.map(c=>{
+      const summ = c.title || c.issue || '주의사항';
+      const img = c.img ? `<div class="ct-img"><img class="ct-photo" src="${esc(c.img)}" alt="" loading="lazy"></div>` : '';
+      const fields =
+        (c.issue?`<div class="ct-field"><b>자주 발생하는 사고</b>${fmtBody(c.issue)}</div>`:'')+
+        (c.action?`<div class="ct-field"><b>조치 요청</b>${fmtBody(c.action)}</div>`:'')+
+        (c.review?`<div class="ct-field"><b>리뷰</b>${fmtBody(c.review)}</div>`:'');
+      return `<details class="faq-item"><summary>${esc(summ)}</summary><div class="faq-a"><div class="ct-row">${img}<div class="ct-text">${fields}</div></div></div></details>`;
+    }).join('')+
+    `</div>`;
+}
+
 function detailHTML(o){
   // 시뮬레이션 선택: 시트 '시뮬' 열 값으로 지정(TARTAN / PEBBLE / 체어단순배송). 비어있으면 아티클명으로 자동 판정
   const st = (o.sim||'').replace(/\s/g,''); const U = o.name.toUpperCase();
@@ -732,10 +780,11 @@ function detailHTML(o){
   const defBody = hasGuide ? pdfEmbed(id)
     : noGuide ? `<div class="center"><b style="font-size:17px;color:var(--ink)">단순개봉 후 배치</b><br><span style="font-size:13.5px">별도 조립 없이 상자 개봉 후 그대로 사용하세요.</span></div>`
     : `<div class="center">설치가이드 준비중입니다.</div>`;
-  const body = useTartan ? (simHTML(o.simdesc)+faqHTML(o)+moduleGuideHTML())
-             : usePebble ? (pebbleSimHTML(o.simdesc)+faqHTML(o))
-             : useDelivery ? (deliverySimHTML(o.simdesc)+faqHTML(o))
-             : (defBody+faqHTML(o));
+  const caution = cautionHTML(o);
+  const body = useTartan ? (simHTML(o.simdesc)+caution+faqHTML(o)+moduleGuideHTML())
+             : usePebble ? (pebbleSimHTML(o.simdesc)+caution+faqHTML(o))
+             : useDelivery ? (deliverySimHTML(o.simdesc)+caution+faqHTML(o))
+             : (defBody+caution+faqHTML(o));
   return `<div class="detail">
     <nav class="crumb"><a data-home>설치가이드</a><i>›</i><a data-cbrand>${esc(o.brand)}</a><i>›</i><span>${esc(o.name)}</span></nav>
     <div class="dchip">${chip}</div>
@@ -781,8 +830,11 @@ fetch(CSV_URL)
     document.getElementById('brandSection').innerHTML = `<h4>브랜드</h4>` +
       brands.map(b=>`<a data-brand="${esc(b)}">${esc(b)}<span class="n">${bcount[b]}</span></a>`).join('');
     drawer.querySelectorAll('a[data-brand]').forEach(a=>a.onclick = ()=>selectBrand(a.dataset.brand));
-    // FAQ 탭 로드 후 라우팅
-    fetch(csvUrl(FAQ_TAB)).then(r=>r.ok?r.text():'').then(ft=>{ if(ft) faqRows=toFaq(parseCSV(ft)); }).catch(()=>{}).finally(route);
+    // FAQ + 주의사항 탭 로드 후 라우팅
+    Promise.all([
+      fetch(csvUrl(FAQ_TAB)).then(r=>r.ok?r.text():'').then(t=>{ if(t) faqRows=toFaq(parseCSV(t)); }).catch(()=>{}),
+      fetch(csvUrl(CAUTION_TAB)).then(r=>r.ok?r.text():'').then(t=>{ if(t) cautionRows=toCaution(parseCSV(t)); }).catch(()=>{})
+    ]).finally(route);
   })
   .catch(e=>{ view.innerHTML = `<div class="center">불러오지 못했습니다. 시트 공유 설정(링크가 있는 모든 사용자·보기)과 탭 이름 '${esc(CATALOG_TAB)}'을 확인해 주세요.<br><small>${esc(String(e))}</small></div>`; });
 </script>
