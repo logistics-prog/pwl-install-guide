@@ -229,6 +229,11 @@
   .ct-field:last-child{margin-bottom:0}
   .ct-field b{display:block;font-size:13px;color:var(--accent);margin-bottom:3px}
   .rich-img{display:block;max-width:100%;border-radius:8px;margin:8px 0;border:1px solid var(--line)}
+  img.ct-photo,img.rich-img{cursor:zoom-in}
+  .lightbox{position:fixed;inset:0;z-index:60;display:flex;align-items:center;justify-content:center;
+    padding:5vh 5vw;background:rgba(20,20,18,.45);cursor:zoom-out}
+  .lightbox img{max-width:80vw;max-height:80vh;border-radius:10px;background:#fff;
+    box-shadow:0 14px 44px rgba(0,0,0,.35);cursor:zoom-out}
   .sim-stage.play .modL{animation:simDrop 1.2s cubic-bezier(.45,.05,.3,1) both}
   .sim-stage.play .brk{animation:simBrk .6s ease both;animation-delay:1.3s}
   .sim-stage.play .sim-label{animation:simLbl .6s ease both;animation-delay:1.35s}
@@ -262,6 +267,7 @@
 <main id="view"><div class="center"><div class="spin"></div>불러오는 중…</div></main>
 
 <div class="scrim" id="scrim"></div>
+<div class="lightbox" id="lightbox" hidden><img alt=""></div>
 <aside class="drawer" id="drawer" aria-label="카테고리">
   <button class="close" id="drawerClose" aria-label="닫기">&times;</button>
   <div id="brandSection"></div>
@@ -821,6 +827,16 @@ function route(){ const m=(location.hash||'').match(/^#a\/(\d+)/); if(m && byId[
 window.addEventListener('hashchange', route);
 
 document.getElementById('q').addEventListener('input', refresh);
+
+// 이미지 클릭 → 크게 보기(라이트박스), 다시 클릭 → 닫기
+const lb = document.getElementById('lightbox'), lbImg = lb.querySelector('img');
+function closeLb(){ lb.hidden=true; lbImg.removeAttribute('src'); }
+document.addEventListener('click', e=>{
+  const im = e.target.closest('img.ct-photo, img.rich-img');
+  if(im){ lbImg.src = im.currentSrc || im.src; lb.hidden=false; return; }
+  if(e.target===lb || e.target===lbImg) closeLb();
+});
+document.addEventListener('keydown', e=>{ if(e.key==='Escape' && !lb.hidden) closeLb(); });
 
 fetch(CSV_URL)
   .then(r=>{ if(!r.ok) throw new Error(r.status); return r.text(); })
