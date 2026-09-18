@@ -794,7 +794,7 @@ function detailHTML(o){
     : `<span class="btn dark disabled">준비중</span>`;
   const chip = o.tag ? esc(o.tag) : esc(`${o.brand} · ${o.cat}`);
   const meta = metaRow([o.step,o.time,o.people,o.tool]);
-  const defBody = hasGuide ? pdfEmbed(id)
+  const defBody = hasGuide ? ''
     : noGuide ? `<div class="center"><b style="font-size:17px;color:var(--ink)">단순개봉 후 배치</b><br><span style="font-size:13.5px">별도 조립 없이 상자 개봉 후 그대로 사용하세요.</span></div>`
     : `<div class="center">설치가이드 준비중입니다.</div>`;
   const caution = cautionHTML(o);
