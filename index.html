@@ -315,10 +315,20 @@ function parseCSV(text){
 
 function esc(s){return (s||'').replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));}
 // 상세 본문: 빈 줄=문단, 줄바꿈=<br>, URL 자동링크, 줄머리 "# "=소제목
+// 구글드라이브 공유링크 → 표시용 이미지 주소로 변환 (그 외 URL은 그대로)
+function imgSrc(u){
+  u=(u||'').trim();
+  const m = u.match(/\/d\/([-\w]{20,})/) || u.match(/[?&]id=([-\w]{20,})/);
+  if(m && /drive\.google\.com|docs\.google\.com/.test(u)) return `https://drive.google.com/thumbnail?id=${m[1]}&sz=w1200`;
+  return u;
+}
 function fmtBody(t){
-  const link = s => s.replace(/(https?:\/\/[^\s<]+)/g, url => /\.(png|jpe?g|webp|gif)(\?|$)/i.test(url)
-    ? `<img class="rich-img" src="${url}" alt="" loading="lazy">`
-    : `<a href="${url}" target="_blank" rel="noopener">${url}</a>`);
+  const link = s => s.replace(/(https?:\/\/[^\s<]+)/g, url => {
+    const isImg = /\.(png|jpe?g|webp|gif)(\?|$)/i.test(url);
+    const isDrive = /drive\.google\.com|docs\.google\.com/.test(url) && /\/d\/[-\w]{20,}|[?&]id=[-\w]{20,}/.test(url);
+    return (isImg||isDrive) ? `<img class="rich-img" src="${imgSrc(url)}" alt="" loading="lazy">`
+                            : `<a href="${url}" target="_blank" rel="noopener">${url}</a>`;
+  });
   const lines = esc(t).replace(/\r/g,'').split('\n');
   let html='', buf=[];
   const flush = ()=>{ if(buf.length){ html+=`<p>${buf.join('<br>')}</p>`; buf=[]; } };
@@ -362,10 +372,10 @@ function toObjects(grid){
 function cardHTML(o){
   const linkable = !!o.link;
   const imgBase = o.img
-    ? `<img loading="lazy" alt="${esc(o.name)}" src="${esc(o.img)}">`
+    ? `<img loading="lazy" alt="${esc(o.name)}" src="${esc(imgSrc(o.img))}">`
     : '';
   const imgHover = o.hover
-    ? `<img class="hover" alt="" data-src="${esc(o.hover)}">` : '';
+    ? `<img class="hover" alt="" data-src="${esc(imgSrc(o.hover))}">` : '';
   const tag = o.tag ? `<span class="tag">${esc(o.tag)}</span>` : '';
   const lv = (o.link||'').trim();
   const hasGuide = /^https?:\/\//i.test(lv);
@@ -750,7 +760,7 @@ function cautionHTML(o){
   return `<div class="caution"><h3>제품별 설치 주의사항</h3>`+
     list.map(c=>{
       const summ = c.title || c.issue || '주의사항';
-      const img = c.img ? `<div class="ct-img"><img class="ct-photo" src="${esc(c.img)}" alt="" loading="lazy"></div>` : '';
+      const img = c.img ? `<div class="ct-img"><img class="ct-photo" src="${esc(imgSrc(c.img))}" alt="" loading="lazy"></div>` : '';
       const fields =
         (c.issue?`<div class="ct-field"><b>자주 발생하는 사고</b>${fmtBody(c.issue)}</div>`:'')+
         (c.action?`<div class="ct-field"><b>조치 요청</b>${fmtBody(c.action)}</div>`:'')+
