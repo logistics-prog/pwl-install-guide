@@ -770,8 +770,8 @@ function cautionHTML(o){
       const img = c.img ? `<div class="ct-img"><img class="ct-photo" src="${esc(imgSrc(c.img))}" alt="" loading="lazy"></div>` : '';
       const fields =
         (c.issue?`<div class="ct-field"><b>자주 발생하는 사고</b>${fmtBody(c.issue)}</div>`:'')+
-        (c.action?`<div class="ct-field"><b>조치 요청</b>${fmtBody(c.action)}</div>`:'')+
-        (c.review?`<div class="ct-field"><b>리뷰</b>${fmtBody(c.review)}</div>`:'');
+        (c.action?`<div class="ct-field"><b>조치요청</b>${fmtBody(c.action)}</div>`:'')+
+        (c.review?`<div class="ct-field"><b>체크사항</b>${fmtBody(c.review)}</div>`:'');
       return `<details class="faq-item"><summary>${esc(summ)}</summary><div class="faq-a"><div class="ct-row">${img}<div class="ct-text">${fields}</div></div></div></details>`;
     }).join('')+
     `</div>`;
