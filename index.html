@@ -328,6 +328,8 @@ const SHEET_ID = '1paHLmKICvQ7EAlh07nir9-9BPW_VEHIzcesS4JRJ1LU';
 const CATALOG_TAB = '카탈로그';   // 카탈로그 탭
 const FAQ_TAB = 'FAQ';           // FAQ 탭 (열: 브랜드 아티클 질문 답변 순서)
 const CAUTION_TAB = '주의사항';   // 주의사항 탭 (열: 브랜드 아티클 이슈사항 조치요청 리뷰 순서)
+// 번역 탭(언어별). 헤더는 2행, 데이터는 3행부터. 열: 브랜드 카테고리 아티클 설명_ 상세_ 시뮬설명_ 질문_ 답변_ 제목_ 자주발생하는사고_ 조치요청_ 체크사항_
+const TRANS_TABS = { en:'카탈로그_EN', ja:'카탈로그_JP' };
 // 열 헤더(순서 무관, 이름으로 인식): 브랜드 카테고리 아티클 이미지 hover 태그 설명 링크 순서 노출 상세 단계 소요 인원 공구
 // ================
 
@@ -337,6 +339,34 @@ const view = document.getElementById('view');
 let rows = [];
 let faqRows = [];
 let cautionRows = [];
+let TR = { en:{}, ja:{} };   // 언어별 번역 룩업: key → {desc,detail,simdesc,faqs[],cautions[]}
+const trKey = o => [o.brand,o.cat,o.name].map(s=>(s||'').replace(/\s/g,'').toLowerCase()).join('|');
+function trOf(o){ return (lang==='en'||lang==='ja') ? (TR[lang][trKey(o)]||null) : null; }
+// 번역탭 파싱: 헤더 2행(index1), 데이터 3행부터. 아티클별로 desc/detail/simdesc는 첫 값, FAQ·주의사항은 행 순서대로 누적
+function toTrans(grid){
+  const out={};
+  if(grid.length<3) return out;
+  const head=grid[1].map(h=>(h||'').trim());
+  const clean=h=>(h||'').replace(/\s/g,'').toLowerCase();
+  const idx=lbl=>head.findIndex(h=>clean(h).startsWith(clean(lbl)));
+  const c={brand:idx('브랜드'),cat:idx('카테고리'),art:idx('아티클'),
+    desc:idx('설명'),detail:idx('상세'),simdesc:idx('시뮬설명'),
+    q:idx('질문'),a:idx('답변'),
+    title:idx('제목'),issue:idx('자주발생'),action:idx('조치'),review:idx('체크')};
+  const g=(r,k)=> c[k]>=0 ? (r[c[k]]||'').trim() : '';
+  grid.slice(2).forEach(r=>{
+    if(!g(r,'brand') && !g(r,'art')) return;
+    const key=[g(r,'brand'),g(r,'cat'),g(r,'art')].map(s=>s.replace(/\s/g,'').toLowerCase()).join('|');
+    const e=out[key]||(out[key]={desc:'',detail:'',simdesc:'',faqs:[],cautions:[]});
+    if(g(r,'desc')&&!e.desc) e.desc=g(r,'desc');
+    if(g(r,'detail')&&!e.detail) e.detail=g(r,'detail');
+    if(g(r,'simdesc')&&!e.simdesc) e.simdesc=g(r,'simdesc');
+    if(g(r,'q')||g(r,'a')) e.faqs.push({q:g(r,'q'),a:g(r,'a')});
+    if(g(r,'title')||g(r,'issue')||g(r,'action')||g(r,'review'))
+      e.cautions.push({title:g(r,'title'),issue:g(r,'issue'),action:g(r,'action'),review:g(r,'review')});
+  });
+  return out;
+}
 
 // ===== 다국어(i18n) =====
 let lang = 'ko';
@@ -503,7 +533,7 @@ function cardHTML(o){
     <div class="body">
       <div class="brand">${esc(trBrand(o.brand))}</div>
       <h3>${esc(o.name)}</h3>
-      <div class="desc">${esc(L(o,'desc'))}</div>
+      <div class="desc">${esc((trOf(o)&&trOf(o).desc)||o.desc)}</div>
     </div>
     <div class="meta">${meta}</div>
   </a>`;
@@ -875,8 +905,12 @@ function faqHTML(o){
   const list=faqRows.filter(f=> nz(f.article) && nz(f.brand)===nz(o.brand) && nz(o.name).includes(nz(f.article)))
     .sort((a,b)=>(Number(a.order||1e9))-(Number(b.order||1e9)));
   if(!list.length) return '';
+  const tr=trOf(o), tf=tr?tr.faqs:[];
   return `<div class="faq"><h3>${t('faqTitle')}</h3>`+
-    list.map(f=>`<details class="faq-item"><summary>${esc(L(f,'q'))}</summary><div class="faq-a">${fmtBody(L(f,'a'))}</div></details>`).join('')+
+    list.map((f,i)=>{
+      const q=(tf[i]&&tf[i].q)||f.q, a=(tf[i]&&tf[i].a)||f.a;
+      return `<details class="faq-item"><summary>${esc(q)}</summary><div class="faq-a">${fmtBody(a)}</div></details>`;
+    }).join('')+
     `</div>`;
 }
 
@@ -904,14 +938,17 @@ function cautionHTML(o){
   const list=cautionRows.filter(c=> nz(c.article) && nz(c.brand)===nz(o.brand) && nz(o.name).includes(nz(c.article)))
     .sort((a,b)=>(Number(a.order||1e9))-(Number(b.order||1e9)));
   if(!list.length) return '';
+  const tr=trOf(o), tc=tr?tr.cautions:[];
   return `<div class="caution"><h3>${t('cautionTitle')}</h3>`+
-    list.map(c=>{
-      const summ = L(c,'title') || L(c,'issue') || t('cautionTitle');
+    list.map((c,i)=>{
+      const x=tc[i]||{};
+      const title=x.title||c.title, issue=x.issue||c.issue, action=x.action||c.action, review=x.review||c.review;
+      const summ = title || issue || t('cautionTitle');
       const img = c.img ? `<div class="ct-img"><img class="ct-photo" src="${esc(imgSrc(c.img))}" alt="" loading="lazy"></div>` : '';
       const fields =
-        (c.issue?`<div class="ct-field"><b>${t('ctIssue')}</b>${fmtBody(L(c,'issue'))}</div>`:'')+
-        (c.action?`<div class="ct-field"><b>${t('ctAction')}</b>${fmtBody(L(c,'action'))}</div>`:'')+
-        (c.review?`<div class="ct-field"><b>${t('ctReview')}</b>${fmtBody(L(c,'review'))}</div>`:'');
+        (issue?`<div class="ct-field"><b>${t('ctIssue')}</b>${fmtBody(issue)}</div>`:'')+
+        (action?`<div class="ct-field"><b>${t('ctAction')}</b>${fmtBody(action)}</div>`:'')+
+        (review?`<div class="ct-field"><b>${t('ctReview')}</b>${fmtBody(review)}</div>`:'');
       return `<details class="faq-item"><summary>${esc(summ)}</summary><div class="faq-a"><div class="ct-row">${img}<div class="ct-text">${fields}</div></div></div></details>`;
     }).join('')+
     `</div>`;
@@ -937,8 +974,9 @@ function detailHTML(o){
   const defBody = hasGuide ? ''
     : noGuide ? `<div class="center"><b style="font-size:17px;color:var(--ink)">${t('simpleTitle')}</b><br><span style="font-size:13.5px">${t('simpleBody')}</span></div>`
     : `<div class="center">${t('pendingBody')}</div>`;
-  const simdesc = L(o,'simdesc');
-  const ddesc = L(o,'detail') || L(o,'desc');
+  const tr = trOf(o);
+  const simdesc = (tr&&tr.simdesc) || o.simdesc;
+  const ddesc = (tr&&(tr.detail||tr.desc)) || o.detail || o.desc;
   const caution = cautionHTML(o);
   const body = useTartan ? (simHTML(simdesc)+caution+faqHTML(o)+moduleGuideHTML())
              : usePebble ? (pebbleSimHTML(simdesc)+caution+faqHTML(o))
@@ -1002,7 +1040,9 @@ fetch(CSV_URL)
     // FAQ + 주의사항 탭 로드 후 라우팅
     Promise.all([
       fetch(csvUrl(FAQ_TAB)).then(r=>r.ok?r.text():'').then(t=>{ if(t) faqRows=toFaq(parseCSV(t)); }).catch(()=>{}),
-      fetch(csvUrl(CAUTION_TAB)).then(r=>r.ok?r.text():'').then(t=>{ if(t) cautionRows=toCaution(parseCSV(t)); }).catch(()=>{})
+      fetch(csvUrl(CAUTION_TAB)).then(r=>r.ok?r.text():'').then(t=>{ if(t) cautionRows=toCaution(parseCSV(t)); }).catch(()=>{}),
+      fetch(csvUrl(TRANS_TABS.en)).then(r=>r.ok?r.text():'').then(t=>{ if(t) TR.en=toTrans(parseCSV(t)); }).catch(()=>{}),
+      fetch(csvUrl(TRANS_TABS.ja)).then(r=>r.ok?r.text():'').then(t=>{ if(t) TR.ja=toTrans(parseCSV(t)); }).catch(()=>{})
     ]).finally(route);
   })
   .catch(e=>{ view.innerHTML = `<div class="center">불러오지 못했습니다. 시트 공유 설정(링크가 있는 모든 사용자·보기)과 탭 이름 '${esc(CATALOG_TAB)}'을 확인해 주세요.<br><small>${esc(String(e))}</small></div>`; });
