@@ -257,11 +257,14 @@
     padding:2vh 2vw;background:rgba(20,20,18,.55)}
   .pdfmodal[hidden]{display:none}
   .pdfmodal .pm-box{position:relative;width:85vw;height:85vh;background:#fff;border-radius:12px;
-    overflow:hidden;box-shadow:0 18px 50px rgba(0,0,0,.4)}
-  .pdfmodal iframe{width:100%;height:100%;border:0;display:block}
-  .pdfmodal .pm-close{position:absolute;top:10px;right:12px;z-index:2;border:none;
-    background:rgba(20,20,18,.62);color:#fff;font-size:22px;line-height:34px;width:34px;height:34px;
-    border-radius:50%;cursor:pointer;text-align:center}
+    overflow:hidden;box-shadow:0 18px 50px rgba(0,0,0,.4);display:flex;flex-direction:column}
+  .pdfmodal .pm-bar{flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;
+    gap:10px;padding:8px 10px 8px 16px;background:var(--tag);border-radius:12px 12px 0 0}
+  .pdfmodal .pm-open{color:#fff;font-size:14px;font-weight:600;text-decoration:none;white-space:nowrap}
+  .pdfmodal .pm-open:hover{color:#ffd9cf}
+  .pdfmodal iframe{flex:1 1 auto;width:100%;border:0;display:block;background:#fff}
+  .pdfmodal .pm-close{flex:0 0 auto;border:none;background:rgba(255,255,255,.16);color:#fff;
+    font-size:22px;line-height:32px;width:32px;height:32px;border-radius:50%;cursor:pointer;text-align:center}
   .pdfmodal .pm-close:hover{background:var(--guide)}
   .sim-stage.play .modL{animation:simDrop 1.2s cubic-bezier(.45,.05,.3,1) both}
   .sim-stage.play .brk{animation:simBrk .6s ease both;animation-delay:1.3s}
@@ -323,7 +326,7 @@
 
 <div class="scrim" id="scrim"></div>
 <div class="lightbox" id="lightbox" hidden><img alt=""></div>
-<div class="pdfmodal" id="pdfmodal" hidden><div class="pm-box"><button class="pm-close" id="pmClose" aria-label="close">&times;</button><iframe title="guide" loading="lazy"></iframe></div></div>
+<div class="pdfmodal" id="pdfmodal" hidden><div class="pm-box"><div class="pm-bar"><a class="pm-open" id="pmOpen" target="_blank" rel="noopener"></a><button class="pm-close" id="pmClose" aria-label="close">&times;</button></div><iframe title="guide" loading="lazy"></iframe></div></div>
 <aside class="drawer" id="drawer" aria-label="카테고리">
   <button class="close" id="drawerClose" aria-label="닫기">&times;</button>
   <div id="brandSection"></div>
@@ -395,7 +398,7 @@ const T = {
     searchPh:'브랜드·제품 검색', cat:'카테고리', brand:'브랜드', all:'전체',
     home:'설치가이드', loading:'불러오는 중…', noResult:'검색 결과가 없습니다.',
     mStep:'단계', mTime:'소요', mPeople:'인원', mTool:'공구',
-    pdfBtn:'📄 상세 설치가이드', pending:'준비중', pendingBody:'설치가이드 준비중입니다.',
+    pdfBtn:'📄 상세 설치가이드', openNew:'↗ 새 탭에서 열기', pending:'준비중', pendingBody:'설치가이드 준비중입니다.',
     simpleTitle:'단순개봉 후 배치', simpleBody:'별도 조립 없이 상자 개봉 후 그대로 사용하세요.',
     simTitle:'설치 시뮬레이션', replay:'▶ 다시 재생',
     faqTitle:'자주 하는 질문 (FAQ)', cautionTitle:'설치 주의사항',
@@ -408,7 +411,7 @@ const T = {
     searchPh:'Search brand or product', cat:'Category', brand:'Brand', all:'All',
     home:'Installation Guide', loading:'Loading…', noResult:'No results found.',
     mStep:'Steps', mTime:'Time', mPeople:'People', mTool:'Tools',
-    pdfBtn:'📄 Detailed Install Guide', pending:'Coming soon', pendingBody:'Installation guide coming soon.',
+    pdfBtn:'📄 Detailed Install Guide', openNew:'↗ Open in new tab', pending:'Coming soon', pendingBody:'Installation guide coming soon.',
     simpleTitle:'Unbox & place', simpleBody:'No assembly needed — just unbox and use.',
     simTitle:'Installation Simulation', replay:'▶ Replay',
     faqTitle:'FAQ', cautionTitle:'Installation Cautions',
@@ -421,7 +424,7 @@ const T = {
     searchPh:'ブランド・製品を検索', cat:'カテゴリー', brand:'ブランド', all:'すべて',
     home:'設置ガイド', loading:'読み込み中…', noResult:'検索結果がありません。',
     mStep:'手順', mTime:'所要時間', mPeople:'人数', mTool:'工具',
-    pdfBtn:'📄 詳細設置ガイド', pending:'準備中', pendingBody:'設置ガイドは準備中です。',
+    pdfBtn:'📄 詳細設置ガイド', openNew:'↗ 新しいタブで開く', pending:'準備中', pendingBody:'設置ガイドは準備中です。',
     simpleTitle:'開梱してそのまま設置', simpleBody:'組立不要。開梱してそのままご使用ください。',
     simTitle:'設置シミュレーション', replay:'▶ 再生',
     faqTitle:'よくある質問 (FAQ)', cautionTitle:'設置時の注意事項',
@@ -1039,12 +1042,17 @@ document.getElementById('q').addEventListener('input', refresh);
 const lb = document.getElementById('lightbox'), lbImg = lb.querySelector('img');
 function closeLb(){ lb.hidden=true; lbImg.removeAttribute('src'); }
 // 상세 설치가이드 PDF 모달
-const pm = document.getElementById('pdfmodal'), pmFrame = pm.querySelector('iframe');
-function openPm(src){ pmFrame.src=src; pm.hidden=false; }
+const pm = document.getElementById('pdfmodal'), pmFrame = pm.querySelector('iframe'), pmOpen = document.getElementById('pmOpen');
+const viewUrl = src => src.replace('/preview','/view');   // 새 탭은 전체 Drive 뷰어(모든 페이지)
+function openPm(src){ pmOpen.href=viewUrl(src); pmOpen.textContent=t('openNew'); pmFrame.src=src; pm.hidden=false; }
 function closePm(){ pm.hidden=true; pmFrame.removeAttribute('src'); }
 document.addEventListener('click', e=>{
   const gb = e.target.closest('[data-pdf]');
-  if(gb){ openPm(gb.dataset.pdf); return; }
+  if(gb){ const src=gb.dataset.pdf;
+    // 모바일: Drive 미리보기 iframe이 2페이지부터 실패(서드파티 쿠키) → 네이티브 뷰어(새 탭)로 전체 표시
+    if(window.matchMedia('(max-width:600px)').matches) window.open(viewUrl(src),'_blank','noopener');
+    else openPm(src);
+    return; }
   if(e.target===pm || e.target.id==='pmClose'){ closePm(); return; }
   const im = e.target.closest('img.ct-photo, img.rich-img');
   if(im){ lbImg.src = im.currentSrc || im.src; lb.hidden=false; return; }
