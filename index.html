@@ -1043,14 +1043,14 @@ const lb = document.getElementById('lightbox'), lbImg = lb.querySelector('img');
 function closeLb(){ lb.hidden=true; lbImg.removeAttribute('src'); }
 // 상세 설치가이드 PDF 모달
 const pm = document.getElementById('pdfmodal'), pmFrame = pm.querySelector('iframe'), pmOpen = document.getElementById('pmOpen');
-const viewUrl = src => src.replace('/preview','/view');   // 새 탭은 전체 Drive 뷰어(모든 페이지)
-function openPm(src){ pmOpen.href=viewUrl(src); pmOpen.textContent=t('openNew'); pmFrame.src=src; pm.hidden=false; }
+// 새 탭도 /preview(임베드 뷰어)로 연다: 최상위 페이지라 전체 페이지 로드 + 모바일에서 Drive 앱/로그인 안 거침
+function openPm(src){ pmOpen.href=src; pmOpen.textContent=t('openNew'); pmFrame.src=src; pm.hidden=false; }
 function closePm(){ pm.hidden=true; pmFrame.removeAttribute('src'); }
 document.addEventListener('click', e=>{
   const gb = e.target.closest('[data-pdf]');
   if(gb){ const src=gb.dataset.pdf;
-    // 모바일: Drive 미리보기 iframe이 2페이지부터 실패(서드파티 쿠키) → 네이티브 뷰어(새 탭)로 전체 표시
-    if(window.matchMedia('(max-width:600px)').matches) window.open(viewUrl(src),'_blank','noopener');
+    // 모바일: 인라인 iframe은 2페이지부터 실패(서드파티 쿠키) → /preview를 새 탭(최상위)으로 열어 전체 표시(로그인 불필요)
+    if(window.matchMedia('(max-width:600px)').matches) window.open(src,'_blank','noopener');
     else openPm(src);
     return; }
   if(e.target===pm || e.target.id==='pmClose'){ closePm(); return; }
