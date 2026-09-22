@@ -349,7 +349,7 @@ function toTrans(grid){
   const head=grid[1].map(h=>(h||'').trim());
   const clean=h=>(h||'').replace(/\s/g,'').toLowerCase();
   const idx=lbl=>head.findIndex(h=>clean(h).startsWith(clean(lbl)));
-  const c={brand:idx('브랜드'),cat:idx('카테고리'),art:idx('아티클'),
+  const c={brand:idx('브랜드'),cat:idx('카테고리'),art:idx('아티클'),kw:idx('검색'),
     desc:idx('설명'),detail:idx('상세'),simdesc:idx('시뮬설명'),
     q:idx('질문'),a:idx('답변'),
     title:idx('제목'),issue:idx('자주발생'),action:idx('조치'),review:idx('체크')};
@@ -357,7 +357,8 @@ function toTrans(grid){
   grid.slice(2).forEach(r=>{
     if(!g(r,'brand') && !g(r,'art')) return;
     const key=[g(r,'brand'),g(r,'cat'),g(r,'art')].map(s=>s.replace(/\s/g,'').toLowerCase()).join('|');
-    const e=out[key]||(out[key]={desc:'',detail:'',simdesc:'',faqs:[],cautions:[]});
+    const e=out[key]||(out[key]={kw:'',desc:'',detail:'',simdesc:'',faqs:[],cautions:[]});
+    if(g(r,'kw')&&!e.kw) e.kw=g(r,'kw');
     if(g(r,'desc')&&!e.desc) e.desc=g(r,'desc');
     if(g(r,'detail')&&!e.detail) e.detail=g(r,'detail');
     if(g(r,'simdesc')&&!e.simdesc) e.simdesc=g(r,'simdesc');
@@ -614,7 +615,9 @@ function currentList(){
   const q = document.getElementById('q').value.trim().toLowerCase();
   if(q){ const kw = q.split(/\s+/);
     list = list.filter(o=>{
-      const hay = `${o.brand} ${o.cat} ${o.name} ${o.desc} ${o.ko1} ${o.ko2}`.toLowerCase();
+      const k=trKey(o), tj=TR.ja[k], te=TR.en[k];
+      const ext=[tj&&tj.kw,tj&&tj.desc,te&&te.kw,te&&te.desc].filter(Boolean).join(' ');
+      const hay = `${o.brand} ${o.cat} ${o.name} ${o.desc} ${o.ko1} ${o.ko2} ${ext}`.toLowerCase();
       return kw.every(k=>hay.includes(k));
     });
   }
