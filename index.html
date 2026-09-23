@@ -32,11 +32,20 @@
   .menu-btn{margin-left:8px;background:none;border:1px solid var(--line);border-radius:10px;
     width:40px;height:36px;display:grid;place-items:center;cursor:pointer;color:var(--ink);font-size:17px;flex:0 0 auto}
   .menu-btn:hover{background:#fff}
-  .lang-sw{margin-left:auto;display:inline-flex;gap:2px;background:#fff;border:1px solid var(--line);border-radius:20px;padding:2px;flex:0 0 auto}
-  .lang-sw button{border:none;background:none;font:inherit;font-size:12px;font-weight:600;color:var(--sub);
-    padding:5px 9px;border-radius:16px;cursor:pointer;white-space:nowrap;line-height:1}
-  .lang-sw button.on{background:var(--tag);color:#fff}
-  @media(max-width:600px){.lang-sw button{font-size:11px;padding:5px 7px}}
+  .lang-sw{margin-left:auto;position:relative;flex:0 0 auto}
+  .lang-toggle{display:inline-flex;align-items:center;gap:6px;background:#fff;border:1px solid var(--line);
+    border-radius:20px;padding:7px 12px;font:inherit;font-size:13px;font-weight:600;color:var(--ink);cursor:pointer;line-height:1;white-space:nowrap}
+  .lang-toggle .lang-globe{font-size:14px}
+  .lang-toggle .lang-caret{color:var(--sub);font-size:11px}
+  .lang-menu{position:absolute;top:calc(100% + 6px);right:0;z-index:30;background:#fff;border:1px solid var(--line);
+    border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.14);padding:6px;min-width:150px;display:flex;flex-direction:column;gap:2px}
+  .lang-menu[hidden]{display:none}
+  .lang-menu button{display:flex;align-items:center;gap:9px;border:none;background:none;font:inherit;font-size:13.5px;
+    font-weight:600;color:var(--ink);padding:9px 12px;border-radius:8px;cursor:pointer;white-space:nowrap;text-align:left}
+  .lang-menu button .fl{font-size:15px}
+  .lang-menu button:hover{background:var(--panel)}
+  .lang-menu button.on{background:var(--tag);color:#fff}
+  @media(max-width:600px){.lang-toggle{font-size:12px;padding:6px 10px}}
   .hero{max-width:1040px;margin:0 auto;padding:44px 24px 8px;text-align:center}
   .hero h1{font-size:37px;margin:0 0 12px;letter-spacing:-.02em;text-wrap:balance}
   .hero h1 .accent{color:var(--accent)}
@@ -311,9 +320,16 @@
     <img class="logo" alt="무브먼트랩" src="data:image/x-icon;base64,AAABAAEAEBAAAAEAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAAAQAABMLAAATCwAAAAAAAAAAAAD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wAHBwT/BwcE/wcHBP8HBwQwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABwcEMAcHBP8HBwT/BwcE/////wD///8ABwcE/wcHBP8HBwT/BwcEMAAAAAAHBwQWBwcE1wcHBNMHBwQRAAAAAAcHBDAHBwT/BwcE/wcHBP////8A////AAcHBP8HBwT/BwcE/wcHBDAAAAAABwcEowcHBP8HBwT/BwcElQAAAAAHBwQwBwcE/wcHBP8HBwT/////AP///wAHBwT/BwcE/wcHBP8HBwQwBwcEQQcHBP8HBwT/BwcE/wcHBP0HBwQxBwcEMAcHBP8HBwT/BwcE/////wD///8ABwcE/wcHBP8HBwT/BwcENgcHBNcHBwT/BwcE/wcHBP8HBwT/BwcExAcHBDEHBwT/BwcE/wcHBP////8A////AAcHBP8HBwT/BwcE/wcHBKsHBwT/BwcE/wcHBNAHBwTDBwcE/wcHBP8HBwSOBwcE/wcHBP8HBwT/////AP///wAHBwT/BwcE/wcHBP8HBwT/BwcE/wcHBP4HBwQ5BwcELwcHBPwHBwT/BwcE/AcHBP8HBwT/BwcE/////wD///8ABwcE/wcHBP8HBwT/BwcE/wcHBP8HBwSbAAAAAAAAAAAHBwSSBwcE/wcHBP8HBwT/BwcE/wcHBP////8A////AAcHBP8HBwT/BwcE/wcHBP8HBwTsBwcEEgAAAAAAAAAABwcEDwcHBOkHBwT/BwcE/wcHBP8HBwT/////AP///wAHBwT/BwcE/wcHBP8HBwT/BwcEYgAAAAAAAAAAAAAAAAAAAAAHBwRiBwcE/wcHBP8HBwT/BwcE/////wD///8ABwcE/wcHBP8HBwT/BwcExAcHBAEAAAAAAAAAAAAAAAAAAAAABwcEAQcHBMcHBwT/BwcE/wcHBP////8A////AAcHBP8HBwT/BwcE/AcHBC0AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHBwQxBwcE/QcHBP8HBwT/////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A//8AAP//AACH4QAAhCEAAIQhAACAAQAAgAEAAIABAACAAQAAgYEAAIGBAACDwQAAg8EAAIfhAAD//wAA//8AAA=="><span class="hdr-logo"><svg class="ml-logo" viewBox="0 0 1385 96" xmlns="http://www.w3.org/2000/svg"><path d="M106.629 7.58545L85.4824 1.84863H85.22L75.6424 17.9497L53.4339 54.3381L31.2255 17.9497L21.6598 1.84863H21.3974L0.250498 7.58545L0 7.65694V93.756H23.8902H24.0214V69.1154L24.1407 46.8005L47.5299 84.7037H47.7924H59.0874H59.3499L82.7272 46.8005L82.8465 69.1154V93.756H82.9896H106.88V7.65694L106.629 7.58545Z" fill="#221E1F"/><path d="M313.233 61.7209L288.281 1.84863L262.673 7.65694L299.445 93.756H325.053L361.956 7.65694L338.709 1.84863L313.233 61.7209Z" fill="#221E1F"/><path d="M160.505 89.4146C152.764 85.2999 146.681 79.6108 142.256 72.3474C137.831 65.084 135.625 56.9023 135.625 47.7903C135.625 38.6783 137.831 30.4966 142.256 23.2332C146.681 15.9699 152.764 10.2807 160.505 6.16602C168.257 2.0513 176.988 0 186.709 0C196.429 0 205.148 2.0513 212.901 6.16602C220.654 10.2807 226.737 15.9699 231.15 23.2332C235.575 30.4966 237.781 38.6783 237.781 47.7903C237.781 56.9023 235.563 65.0721 231.15 72.3474C226.725 79.6108 220.642 85.2999 212.901 89.4146C205.148 93.5293 196.418 95.5807 186.709 95.5807C177 95.5807 168.257 93.5293 160.505 89.4146ZM199.304 70.7731C203.061 68.5905 206.043 65.5015 208.237 61.518C210.42 57.5344 211.517 52.9665 211.517 47.7903C211.517 42.6141 210.42 38.0581 208.237 34.0746C206.055 30.0911 203.061 27.002 199.304 24.8194C195.535 22.6249 191.336 21.5396 186.697 21.5396C182.057 21.5396 177.847 22.6368 174.09 24.8194C170.321 27.002 167.351 30.0911 165.156 34.0746C162.974 38.0581 161.876 42.626 161.876 47.7903C161.876 52.9546 162.974 57.5344 165.156 61.518C167.351 65.5015 170.321 68.5786 174.09 70.7731C177.847 72.9676 182.057 74.0649 186.697 74.0649C191.336 74.0649 195.535 72.9676 199.304 70.7731Z" fill="#221E1F"/><path d="M1233.7 75.9017H1194.85L1187.62 93.756H1161.1L1201.68 1.84863H1227.29L1267.99 93.756H1240.94L1233.72 75.9017H1233.7ZM1226.09 56.7354L1214.27 27.3241L1202.45 56.7354H1226.08H1226.09Z" fill="#221E1F"/><path d="M1379.74 54.4336C1376.77 50.5455 1372.66 47.6711 1367.4 45.8344C1371.33 43.8307 1374.37 41.0875 1376.53 37.6288C1378.67 34.17 1379.74 30.2581 1379.74 25.881C1379.74 18.5222 1376.68 12.6782 1370.55 8.34878C1364.41 4.01938 1355.49 1.84863 1343.76 1.84863H1296.75V74.9834L1322.49 93.756H1346.39C1358.64 93.756 1368.02 91.5734 1374.49 87.1963C1380.97 82.8192 1384.21 76.6054 1384.21 68.5429C1384.21 63.0208 1382.72 58.3217 1379.74 54.4217V54.4336ZM1322.49 20.6213H1340.35C1349.1 20.6213 1353.48 23.5553 1353.48 29.4232C1353.48 35.2911 1349.1 38.3563 1340.35 38.3563H1322.49V20.6332V20.6213ZM1344.28 74.9834H1322.49V56.3419H1344.28C1353.38 56.3419 1357.94 59.4428 1357.94 65.6685C1357.94 71.8943 1353.38 74.9953 1344.28 74.9953V74.9834Z" fill="#221E1F"/><path d="M609.219 7.58545L588.06 1.84863H587.797L578.232 17.9497L556.023 54.3381L533.815 17.9497L524.249 1.84863H523.987L502.828 7.58545L502.589 7.65694V93.756H526.48H526.611V69.1154L526.73 46.8005L550.119 84.7037H550.382H561.665H561.927L585.317 46.8005L585.436 69.1154V93.756H585.567H609.457V7.65694L609.219 7.58545Z" fill="#221E1F"/><path d="M815.333 1.84863V50.629L774.768 1.84863L753.359 14.0735V93.756H778.836V44.8087L807.485 79.3604L819.412 93.756L840.809 81.2807V1.84863H815.333Z" fill="#221E1F"/><path d="M718.305 21.9333H670.25V38.738H711.089V58.1787H670.25V73.6715H716.599V93.756H644.511V21.9333L670.25 1.84863H718.305V21.9333Z" fill="#221E1F"/><path d="M419.468 73.6715V56.8666H460.319V37.4261H419.468V21.9333H465.829V1.84863H419.468L393.741 21.9333V73.6715L419.468 93.756H467.535V73.6715H419.468Z" fill="#221E1F"/><path d="M904.095 22.458H875.864V1.84863H958.197V22.458H930.097V93.756H904.095V22.458Z" fill="#221E1F"/><path d="M1087.86 73.1347V1.84863L1061.86 7.74051V73.1347L1087.86 93.756H1131.71V73.1347H1087.86Z" fill="#221E1F"/></svg><!--AAAACXBIWXMAAAsSAAALEgHS3X78AAAWZUlEQVR4nO2d23HbyBKGf59a1Jk3+UQgngjEjUB0BNZGIGwE5kZgOIKlI/AoAksRLBWBpQgOlYH0NlV48HlA04YpXgB0zw3or0rlkm0MhiQ407f5+83379+h5E1hzKL163Pt3EOsuSiKoiiKoijKlHijDlUekNO0ADAH8BbAZYfLXgA8ANjQnw+1c2svE1QURVEURVGUCdLJoSqMeYvGmL+iPze1cwufExsCzXNDP2sA69q524hTGgy9lhLNe97FeerKC5r35hbAbe3cs+DYQSiMmaNxLBf0J2rn5pHmsgHwDHre0DxzWb2nhTErAB8C3/Y+9hrSClJcAbgA8N/auU3EKe2lMMaimeMtfj5jm4hTGkRhzBUAC+Aswu3fxQ4m0etfAVjVzq083mcB4B/GEF6+m4Uxo4ne1s69iT2HXCiMmeHnXr1AU0WziDejNCmMWYNn60XfU7uSyFrwiMZ22+Bn0oFlvx10qPYYG7v8WTtnh97YB0cMw3uQMZJ6ORy970sA7wPc7gXN+7JK+X3Zyc4tsN8g+z30ayAD6euef3pEBg4WOe1r7P9++yb44k8b+zYotMDr5yi5DemIcfzjGcshaFQYUwH4GHEK0RwqCgCt8Kux9Ievz00dKv+oQ3UYev62e/UCGayzsaG96X8CQ0UPHHUh8bXgCY1dbPvalD8cKlr0F/TTxZh/ATBLxVik+X/r8F+3TsQaCUV6aRGqIJuN6sM9gGVsx2pPNKursX9TO1d6mdQBCmNu0e27kpyDRc/bLeJkC4AAm+qezPp5h8u8GbpDKIx5QLfvQJJBI/oMbhFvXdsS3NCg174CcL3nn18ALHx8VupQ+UcdqobWGrtAs2d3+Z6rQ7UDVSHsWyf6EtwOGkJGa8EjmoSD7fKf3/z2739bdDc2dvlcO7cccJ04jHTpIxojJMrrIAfCIr7BseUGjWMVzOhvZeXmGPYcbvlPqHkzI0qxn7klgL9j3LuFt02VXl+JYZm3JwDzRJzeoZ/Ttqx3GTNgREGuW/C+01IEdagoI7fE8YCFl2dNHSr/TNmhouerxHC7UR2qFq2jKlLBzSRL19tkuBY8AihPBcD+hcYrHrrhfaBNMyqFMSWGOyQXCH9+BMAPg+kB6ThTQPM8bKicLRQbNJkeruFVsmfSHY4zdIFGWCQohTFvKasW25nyzaEy5S6cg/fZikCbbDXw8jM036eZ1Hz6QmvyN6ThTAWjMOaKzlV+xGkD6RyN46soObEAz25UfuVU4KUvpeBYSsMFgG9ksx/kXwI38na4tgtMwyMKO4ZtrJKrY5wB+Epn0rxD0ZQ7gaGCGMItwRAOQb83FPhYI8zZvNxZUgYyJiukuTYchdY2C+BL7LmEpDBmTlUSX9HP0Lyg90tRlGlSCo+3JBtFkefvY+u1hEN1GTibscsSGUVKyFBbIw/D9kNhzEOgL6cVGOM80LN4BZ6xex/ynAtlC9aIIz6RI2eIGCgi51einj4orbUtu7kPpeVAfsPwSoPrU5FPRVHGB+3N0vbrGRobRfHDNZV0v0LCoQKAVQyPmDbwmMpRvSBDqesh81S4ALD2/fmSEMCTwFClwBinqJjXW4E5dIKyjF+QYbYjMu93GmaHJGrWfwgUyMhtbWNBr3kDGQfy74jPm6IocfAVSKk8jas0fNy3Xks5VLHOHdgI9xxEq+QqR8M2iFMFGUPyvc9yLfoScSJKTyHaDVDkfI1I5wNHgg19Q+Z50ChQtO4r8lzbOMwh+5pvUziTrCiKf8iW8BWAClWtM2Xs7l9IOVRA47HNBMc7Cj0sWRge5IhY5G1wXMD/AWqLRqGMi0/nnju2lZjEMcgo2yCT70fCnB9K7fugJbOdBa2zoNlUCSTOGQCr5x8UZRL4TkJoGbFfzikA+gNJhwoIFNHNzfBAIx08hlIYrweoST5YogdQKTDGKyhgwD375vW5pbMY35C3854SIQUqKmTyubXKl3M4C5oTF5BZAxVFSRQhW+IUl5rx9s4vWUBphyqUQEU2QhQU4R5TpuDa82dcCYxxths5EIIb8bnx1d+odTh+7JLooQkiUEEbXxblmS2RkyzW4Ay5VOU/RRk1obJHY81SPaJpZt/nxwe/OMW/ebiBLYyZeTQc58ikxMTzXF/QRIjX9PsaTW+jbURiAX+OnLfPuHZuUxhzD/7clxDMmGYglW7Bi3jdoCkTDEXIe3F5Xxiz8NwY1nocWwyBptBPiPNaNxHuyeG6MGYd4ryloijhELIlunJdGFOl3uh3AMsh+zFlBq8gmJRp2wY+HKozNFkGX55xTqV+PuZ6D2BFqnj7+PH39MXdPjySJYfbqH0pOGabFfgO1UVhzFxQnjx1qXTuuQvr2WHIHUvPk3gQgZyUXEqCuc/ZpnaukpjIBPhSGLMZy/eydu4NdwwS2uHsDZ/0+VMiUyJsaXcJVf0D8KPn6QqNMrmFcIsP6ZK/LR981G7mpIDlYa6PAN7Vzi2OOFO/UDv3XDtna+fmAP6AjODDlmtf9bmCEuqSTn3yYhSKV7womebYmFwJiir/Kcq4CF2Gp41+91A7V0KmFPDHe+vLoQKEszMZClFUgmPd1M7NOZFKclJmAO6kJgW/hqDEZ30tsZAIyJsGkUpXvONDyXSFTIQolCio8p+ijARPjXxPoY1+DyNhZ/6oWvHpUF0KCwNUyMTwINEGqS/NX+RJs6GM1RWa8zIS+Oz5ZCGTUSsTGMMKzEFJAys1EDnqoiUHyihR5T9FGQcl41pONqViXDtaulZ7dcWnQwU0dYoSGYJsFLCIUmicm9o58awcOWhSmSov6WtBCXXW/Mhh5Bq9OWVWleNIKplaoXGU8aPKf4qSMRRAG3oM5Ak8u1Ib/fojSIYKkJMctgJjBIEcSIn+AvdSmakDlJA5p1QKjHGISmAM7kJSMu/vTSpdiQa7BIvaKajsuNKHa0/tIBRF8U/JuNaSoAKnumisEuqDISeXw0tbbMy3QwU0m8Bi6MWZKWABcrWqpdA4eyEjX+IeZwIP5V5oAZE4NFgyruUuQpqdGh9bJdNBUNZTNzdlCF98rbeKovhBoNLF7vw5BG30+5qSef26/UsIhwoYaFRmqoAl4VDdhOgbQCIXEg7LQmCMQ0g4JIPOelE0OGWpdCUeHCVTFaJQOKjyn6LkRcm49m5rD5LNxqks0kAeQfYd9ziHbf/iow/VPi4KY5YDzgPlaHgsBMaoBMboc69/mGMs+NPYT+3cbWHME/jlUUv0X0ymJJU+L4zxfY/NyBoMrtDz2afsgkRJsDJdtsp/Cy0nVpS0ocQAx5awO7+vMLy5+jXZ4pNdNygYVYG/Dz/uilqEcqgAoCqMue1qUOWogEVZEK4DeBfS6KydWws4LL57g3EWkC0leixqE5RK576/XfiE/DLOx7jsEyiijdX6nVLyvA1QsvY8gczwVvlvEXkeiqIc5wrD7cKnPUp0Frz9eon89+Gy5z4yo5855JI0r+zJkA7VVqCia0mc9TcVb8wExlgLjNGXWzBVFAtjZh4dQQu+bP5ZYUzZw8kpGfcC8nx+lf5UhTG2Y8RvCRWiuAA/I36Ke0zD0bikZ6+MPRFFUQ5SMa61u39RO/dcGHOD4QmHMThUsZMtn/b1hQ11hmrL+y5eZcYKWAuBMdYCY8S450xgjL2EllBXqXSlB52UTOmZ+uh9NsrUUOU/RUkUgZ6kh/YWyxjzTNcMFje1c9W+fwjtUAEnHoSpK2BFKlXZCIwxExjjGJXAGBcdD3OXzPuoVPq06KJkagPMQ5kmqvynKGnCsWUP2hEC4hQV49op8/lYRUAMh+qcMlCHyFGIQgqJvlC9EXLiZgJjHERQQr3LAlcy76HZqelx8DOnKKXvc4bKtFHlP0VJCPo+ctZ9e+LfOXbGuQZhevEE4F3t3FH7MYZDBQAf98lYk+GRswIWd0PbSExixEg4KtfHmrJSKpyTolep9GlysS9QpEIUyhFuALwIjbVV/mM1nFYURQxOdupp3xmdHSxjfECzVH3oZNNxHSpORsW2f6GNgGMwR8nu7KCbmUdI7Ubicy4H/lsXLPN6JS6cLOhyT6CowvCM+wuAR8Z8lLTZQFY8Y6v8pyhKRATOYZ+0hakc8IZxj8sh/TknynsA/xTGrI9VAnAdqpJx7SVlpLZwFLBekIa3vYk9gQkgkaXaGzkSSNHnJpWuvGaF4U77LwIV9Dxx1DMrAHoWb8RQNvtPwSEvoSXHihKbknm9Ff5/h6iY10+NSwDfDh1bYjlUlJLkeMirwpi3AgpYFdJwZjbM67UG/jQW/DKZ8x1nfsuUGvkq+3kG7zloK5lyDNv7AY3QlQyhIMxnwSE5/fMUReHjRYxiFwFxiqNHIJSDfCyMsbt/KXGGaonhBu45GmfIMu7/OCLDI4oYh9Bh5iDnhgQl1Mv2L7SoqFS6si0tvWMMYQtjluBlOyerdDpF6LAz55lTFCUB6Bw2x5azPf8/1+7QvWYY17tOFduhIgO3YgzxAeMxPNjlOZGUVyQcqpClSRKOy/ud+mHuc6RS6eOCGyjidLL/rMImk6SEnplTlNypGNd2EaPYxTLuB6RlQ+fGdbv87zeJEWvnVpGkgT8PePh8ImEEzRG+ue9CYIyNwBidqJ17KIy5B/95W+LnYlIyx9Ls1IiondvQQslxjIbwBK1rnyS1c88U3V5juq1DFCVbKCDOUQleDwyqc+yhs8KYMrPz348YHsSfgfcZ7fKxMOa2du5BxKEilgC+CY53ilSEKNpIOFQlwhvn+84T9eGF+kSFxILvUJVolNlKqFT6u8SCE9GhQFGJsGdSlprpnC4ULLoC8E/suSiK0puKef01+EcPhlAhrzPgS669Qo5rCZn3ewVgIdaHigxKyYO1p0jO8KD5cGW9L0I2aBSo9wUCnZ9qQ9EU7nt9Rq+/ZI5jmdcr6RKyHOKezm+NmfvauTeefxaxXyQHMhQklf8URfEMHSHItYH75Br91s6ta+dKAL+DX2p9WRgzk27sWyFMP6j7hNOTa4ExKoExQt4rlhFoBcaooFLpygHIuA0RKHoB37FXRgKtKRwFXUVRwlLFngCTKvYEYkDJoCvw1aNLUYeKMjQhIrplgHsMRcK5eB8iWkBKZBK1pGuBMYYgURrJff1WYA5K2lTgL7anWEUom1UShqKnnEbTiqIEQEglODaTbfRLey/Xdpcr+dtCJSs+N4FPKRse9PoljC/rsz8AlRVWAkM9xTo/JNApXAIVoxg5AQJFj7VzlcfxlXy5gir/KUrqjEUpr4o9gYismddfijtURAk/Ed0n5GHASmSpzoXGeQU5ahYySlKxP4+Y91ep9IlAJVi+AkVj2YwVYWh9KeE/Q6ooynDK2BMQ4mrCjX433AG8OFSUQfJh6JZHDNiUDFup135ZGCOaqaKx1pBRLntB5JI3yo7FKouJ7UwqYSk9jHmj6orKMVo1/oqiJIaASnBKnGG6AT62GJyvDBWohEVSoOLumOGRkmy1sJF/jaY3wYw7EJX5PUBOBvo2kQyNjXDPMUilKz2gQNEnwSFfMN3NS+kB7X1/xZ6HoiivGNsaXsaeQCQW3AG8OVREKTROjgpYleBYFwAeCmOqIdmqwpi3hTErNH3CpCIpyRiDQhLqfbGB76ekwQpyz1pyrR+UdKmdWyH+mVFFUQgSDwvZpzAE55R1mwz0Ob7njiPZ2PcVtXPrwpgb8NVPqtwMD8HXvuUMwEc0jWgtAHsqQ0INIrc/Euel2qwS+0wsmvcnBCqVPlFq555ps+E2Xk259YOSKLVzJVUajM2IU6bD24A9j549V5IkEVT2wBITCRqT2nUlMZZXh4pYgmfQP1JkLke4r30fZwA+APhQGAM0pYXP+Nlcd0F/+mwwl6Iq2QrhHCob6D59eADvM18VxgR3kHNswkrBkjvwIlpj3YhPMS+MWQe+53Jk5bkLNN/3sZzbUPLiFk3F0NDn7wL8gFRX7iFQyrUPOobBzmokykVhzGKM53vpc5uheS5KyK2jj94dKoroLgF8GThEKTidoLSi2V893mZrRIf8YpcB79UJeq8lM4LHSM7Br51bFsZsAPw9cAiNePejRKMKNCRY8mlkBn4fzuA32LOPUalW0Vp3hUZcSLryQFGOUjv3QFlSi/E6FF2omNc/QUBZ7ghz8NaHJfz1GP2MJjEwlH8ooZAS6xAZKtTOWXIs+m6kn3M3PGrnbgtjuA9PSvyZ8Geygn+HKlmp9Nq5FUX/11BDyytk1Fbo78Dm0vpBSRgyakv4DdYpyl5oD7yiNTBUZUgy0Fl2rvLmkvqWekHgs3lfGDPz0feVAsBryLXvSQHrW5SiTd8SlxeMpMlY7dwSwF3seQhwk/K5j0AS6kkbw/QezBBPSn4yUCly36arKkShiEDGmCr/KdGg0v8/ML0+aSV4jsCTT2eKkLBVKoEx9kKvf4Zx2Cr3tXMPwRwqMvT6SA4f6zmVIyXy7nh/UztXxp5EB6zHsbOQSq+de6azSZ9jz2UClD3+712ATVSZEKr8p8SG1rQF8rZv+sI9A2slJnEMsp+5a4PXRr8tW0WyHUkMKsC/bPouXSWH78dmeNDDvUCei04uzpRvCXXraVwvUGZ0itHDYJCD3cVxTabNgDIuaG2W2lfuMZLKECUctA4uMI5KnKMINfINVilimdcHafRLmc7fEb79jQQ3W/GOoA4VORVdPpzS81Si0HKqcooofs7FmWphPYyZpVT6RKOHoalw2mmtfNSiKwqxAC9w8oLmfOwolb0U/1C24Qr5ZxtOUTKvD3YOm77LXCel5M/kNOSUz5GXU/7Yto9DZ6i2Bt67Iz+/j9nwoEWnRPq179sNNseouo/oj/UwZhBa0cOcHPlsoM1xjiPrWsatH5QMaAXrhjhVnwDMcgwYKelB2YZ3GGFlBPXP4qqUWv5MesHde4I1+m055X8h/efnDjuS/EFU/nbRCNgvimwW6UlW36M5w7aJPZEheJJQz9ogJoOrLIx5wHBpdeUA9F3ZRJ6GMmFI+a9Pi5Ks13klXahX3xxNz6rU7BsOJfP6pwj2rwV/zw/a6Ddx+xhoWp9Uu38ZPEOl/KR27qF2bo4mQpiCN94u+9jEngwTSQcoWan0vlCmZJTRQ0WZOpRlOlVy9YQmazqGdV5JFHq2FhhJZQQ1hOUGaYMHZoXEKS4oOxeMVmVNSuJa92iq6Kp9/6gOVQLQhzNDPMfqBSMr+xCWUM86O7ULRchm0HNVijI6aD/ZZ0C9oImszrRKRAlBRkccuiBx/MEKjBHrvqXAGL2g5ycFca0b/AxCHVR6VocqEejBqdAYun8hjNrJI5qM1NvauWosWZgWVmCMLKTS+0LP2xxpRX8URZFhiV8DJjdoAmZVnOkoUyb3ygiSDi+Zw0SrdBESp7imLF1wSHthjnA9q57QrJl/AvhP7VzZJQj1G8bRVGtL9q+FvnArACuqQb6iH6k60ns0dc23Yy/3qJ2zhTFXADh9FEaVndqFOpY/YFzKmhwHOLWgQmqvZYP81llfn+kGvPdiIzON19A50gWaoNJqRBkpbnBrIzEJpT+tc1Ur8PbkPkgFQxcCY1n+NFhU4O/zC0R6HdsS0sKYCjtiEEwe0OwRG/p5GOr4vvn+/bvctBSv0AY5R7MYLeiv3+K1s9Xe5NegB2VEm6qiKIqiKIqiJMH/AVl+KRW94H/YAAAAAElFTkSuQmCC --></span><b class="hdr-sub" data-i18n="hdrSub">· 설치가이드</b>
   </a>
   <div class="lang-sw" id="langSw">
-    <button type="button" data-lang="ko">한국어</button>
-    <button type="button" data-lang="en">EN</button>
-    <button type="button" data-lang="ja">日本語</button>
+    <button type="button" class="lang-toggle" id="langToggle" aria-haspopup="true" aria-expanded="false">
+      <span class="lang-globe">🌐</span><span id="langCur">한국어</span><span class="lang-caret">▾</span>
+    </button>
+    <div class="lang-menu" id="langMenu" hidden>
+      <button type="button" data-lang="ko"><span class="fl">🇰🇷</span>한국어</button>
+      <button type="button" data-lang="en"><span class="fl">🇺🇸</span>English</button>
+      <button type="button" data-lang="ja"><span class="fl">🇯🇵</span>日本語</button>
+      <button type="button" data-lang="ch"><span class="fl">🇨🇳</span>简体中文</button>
+      <button type="button" data-lang="tw"><span class="fl">🇹🇼</span>繁體中文</button>
+    </div>
   </div>
   <button class="menu-btn" id="menuBtn" aria-label="카테고리 메뉴">☰</button>
 </header>
@@ -353,7 +369,7 @@ const CATALOG_TAB = '카탈로그';   // 카탈로그 탭
 const FAQ_TAB = 'FAQ';           // FAQ 탭 (열: 브랜드 아티클 질문 답변 순서)
 const CAUTION_TAB = '주의사항';   // 주의사항 탭 (열: 브랜드 아티클 이슈사항 조치요청 리뷰 순서)
 // 번역 탭(언어별). 헤더는 2행, 데이터는 3행부터. 열: 브랜드 카테고리 아티클 설명_ 상세_ 시뮬설명_ 질문_ 답변_ 제목_ 자주발생하는사고_ 조치요청_ 체크사항_
-const TRANS_TABS = { en:'카탈로그_EN', ja:'카탈로그_JP' };
+const TRANS_TABS = { en:'카탈로그_EN', ja:'카탈로그_JP', ch:'카탈로그_CH', tw:'카탈로그_TW' };
 // 열 헤더(순서 무관, 이름으로 인식): 브랜드 카테고리 아티클 이미지 hover 태그 설명 링크 순서 노출 상세 단계 소요 인원 공구
 // ================
 
@@ -363,9 +379,9 @@ const view = document.getElementById('view');
 let rows = [];
 let faqRows = [];
 let cautionRows = [];
-let TR = { en:{}, ja:{} };   // 언어별 번역 룩업: key → {desc,detail,simdesc,faqs[],cautions[]}
+let TR = { en:{}, ja:{}, ch:{}, tw:{} };   // 언어별 번역 룩업: key → {desc,detail,simdesc,faqs[],cautions[]}
 const trKey = o => [o.brand,o.cat,o.name].map(s=>(s||'').replace(/\s/g,'').toLowerCase()).join('|');
-function trOf(o){ return (lang==='en'||lang==='ja') ? (TR[lang][trKey(o)]||null) : null; }
+function trOf(o){ return TR[lang] ? (TR[lang][trKey(o)]||null) : null; }
 // 번역탭 파싱: 헤더 2행(index1), 데이터 3행부터. 아티클별로 desc/detail/simdesc는 첫 값, FAQ·주의사항은 행 순서대로 누적
 function toTrans(grid){
   const out={};
@@ -435,47 +451,73 @@ const T = {
     ctIssue:'よくある事故', ctAction:'対処方法', ctReview:'レビュー',
     modTitle:'モジュール構成', modSubt:'製品別の構成モジュール一覧（×2 = 該当モジュール2個）',
     doneLabel:'完成イメージ', back:'← 一覧へ戻る', cardSoon:'準備中', cardSimple:'開梱設置',
-    hwNeed:'必要な金具', simHwCap:'金具で結合', glide:'高さ調整' }
+    hwNeed:'必要な金具', simHwCap:'金具で結合', glide:'高さ調整' },
+  ch:{ hdrSub:'· 安装指南', heroA:'品牌', heroB:'安装指南',
+    heroP:'选择系列图片即可查看主要 FAQ 与安装指南。',
+    searchPh:'搜索品牌·产品', cat:'类别', brand:'品牌', all:'全部',
+    home:'安装指南', loading:'加载中…', noResult:'没有搜索结果。',
+    mStep:'步骤', mTime:'耗时', mPeople:'人数', mTool:'工具',
+    pdfBtn:'📄 详细安装指南', openNew:'↗ 在新标签页打开', pmHint:'👉 点击这里查看本页详情', pending:'准备中', pendingBody:'安装指南准备中。',
+    simpleTitle:'开箱即摆放', simpleBody:'无需组装，开箱后即可使用。',
+    simTitle:'安装模拟', replay:'▶ 重新播放',
+    faqTitle:'常见问题 (FAQ)', cautionTitle:'安装注意事项',
+    ctIssue:'常见事故', ctAction:'应对措施', ctReview:'检查事项',
+    modTitle:'模块构成', modSubt:'各产品的构成模块一览（×2 = 该模块2个）',
+    doneLabel:'成品图', back:'← 返回列表', cardSoon:'准备中', cardSimple:'开箱',
+    hwNeed:'所需五金件', simHwCap:'五金件结合', glide:'高度调节' },
+  tw:{ hdrSub:'· 安裝指南', heroA:'品牌', heroB:'安裝指南',
+    heroP:'選擇系列圖片即可查看主要 FAQ 與安裝指南。',
+    searchPh:'搜尋品牌·產品', cat:'類別', brand:'品牌', all:'全部',
+    home:'安裝指南', loading:'載入中…', noResult:'沒有搜尋結果。',
+    mStep:'步驟', mTime:'耗時', mPeople:'人數', mTool:'工具',
+    pdfBtn:'📄 詳細安裝指南', openNew:'↗ 在新分頁開啟', pmHint:'👉 點擊這裡查看本頁詳情', pending:'準備中', pendingBody:'安裝指南準備中。',
+    simpleTitle:'開箱即擺放', simpleBody:'無需組裝，開箱後即可使用。',
+    simTitle:'安裝模擬', replay:'▶ 重新播放',
+    faqTitle:'常見問題 (FAQ)', cautionTitle:'安裝注意事項',
+    ctIssue:'常見事故', ctAction:'應對措施', ctReview:'檢查事項',
+    modTitle:'模組構成', modSubt:'各產品的構成模組一覽（×2 = 該模組2個）',
+    doneLabel:'成品圖', back:'← 返回列表', cardSoon:'準備中', cardSimple:'開箱',
+    hwNeed:'所需五金件', simHwCap:'五金件結合', glide:'高度調節' }
 };
 function t(k){ return (T[lang] && T[lang][k]!=null) ? T[lang][k] : (T.ko[k]||''); }
-const BRAND_I18N = {'잭슨카멜레온':{en:'Jackson Chameleon',ja:'ジャクソンカメレオン'},'무니토':{en:'MUNITO',ja:'MUNITO'},'바이헤이데이':{en:'BYHEYDEY',ja:'BYHEYDEY'},'오블리크테이블':{en:'Oblique Table',ja:'Oblique Table'},'텍스쳐':{en:'TXTURE',ja:'TXTURE'},'매직볼트':{en:'MAGICVAULT',ja:'MAGICVAULT'},'NPD':{en:'NPD',ja:'NPD'}};
-const CAT_I18N = {'소파':{en:'Sofa',ja:'ソファ'},'베드':{en:'Bed',ja:'ベッド'},'다이닝테이블':{en:'Dining Table',ja:'ダイニングテーブル'},'사이드테이블 & 소파테이블':{en:'Side & Sofa Table',ja:'サイド＆ソファテーブル'},'체어':{en:'Chair',ja:'チェア'},'수납장':{en:'Storage',ja:'収納'},'LEFF':{en:'LEFF',ja:'LEFF'},'ETC':{en:'ETC',ja:'その他'}};
-const META_I18N = {'없음':{en:'None',ja:'なし'},'2인 권장':{en:'2 people rec.',ja:'2人推奨'},'1인 권장':{en:'1 person rec.',ja:'1人推奨'},'30분 내외':{en:'~30 min',ja:'約30分'},'1단계':{en:'1 step',ja:'1 ステップ'},'2단계':{en:'2 steps',ja:'2 ステップ'},'3단계':{en:'3 steps',ja:'3 ステップ'}};
+const BRAND_I18N = {'잭슨카멜레온':{en:'Jackson Chameleon',ja:'ジャクソンカメレオン',ch:'Jackson Chameleon',tw:'Jackson Chameleon'},'무니토':{en:'MUNITO',ja:'MUNITO',ch:'MUNITO',tw:'MUNITO'},'바이헤이데이':{en:'BYHEYDEY',ja:'BYHEYDEY',ch:'BYHEYDEY',tw:'BYHEYDEY'},'오블리크테이블':{en:'Oblique Table',ja:'Oblique Table',ch:'Oblique Table',tw:'Oblique Table'},'텍스쳐':{en:'TXTURE',ja:'TXTURE',ch:'TXTURE',tw:'TXTURE'},'매직볼트':{en:'MAGICVAULT',ja:'MAGICVAULT',ch:'MAGICVAULT',tw:'MAGICVAULT'},'NPD':{en:'NPD',ja:'NPD',ch:'NPD',tw:'NPD'}};
+const CAT_I18N = {'소파':{en:'Sofa',ja:'ソファ',ch:'沙发',tw:'沙發'},'베드':{en:'Bed',ja:'ベッド',ch:'床',tw:'床'},'다이닝테이블':{en:'Dining Table',ja:'ダイニングテーブル',ch:'餐桌',tw:'餐桌'},'사이드테이블 & 소파테이블':{en:'Side & Sofa Table',ja:'サイド＆ソファテーブル',ch:'边桌 & 沙发桌',tw:'邊桌 & 沙發桌'},'체어':{en:'Chair',ja:'チェア',ch:'椅子',tw:'椅子'},'수납장':{en:'Storage',ja:'収納',ch:'收纳柜',tw:'收納櫃'},'LEFF':{en:'LEFF',ja:'LEFF',ch:'LEFF',tw:'LEFF'},'ETC':{en:'ETC',ja:'その他',ch:'其他',tw:'其他'}};
+const META_I18N = {'없음':{en:'None',ja:'なし',ch:'无',tw:'無'},'2인 권장':{en:'2 people rec.',ja:'2人推奨',ch:'建议2人',tw:'建議2人'},'1인 권장':{en:'1 person rec.',ja:'1人推奨',ch:'建议1人',tw:'建議1人'},'30분 내외':{en:'~30 min',ja:'約30分',ch:'约30分钟',tw:'約30分鐘'},'1단계':{en:'1 step',ja:'1 ステップ',ch:'1步',tw:'1步'},'2단계':{en:'2 steps',ja:'2 ステップ',ch:'2步',tw:'2步'},'3단계':{en:'3 steps',ja:'3 ステップ',ch:'3步',tw:'3步'}};
 // TARTAN 모듈 구성 카드 이름/구성(전체 문자열 매칭). 좌형=Left/左, 우형=Right/右
 const MODULE_I18N = {
- '암레스트 좌/우':{en:'Armrest L/R',ja:'アームレスト 左/右'},
- '암레스트 라운지':{en:'Armrest Lounge',ja:'アームレスト ラウンジ'},
- '미들':{en:'Middle',ja:'ミドル'},
- '소파 3인 좌형':{en:'3-Seat Sofa (Left)',ja:'3人ソファ 左向き'},
- '소파 3인 우형':{en:'3-Seat Sofa (Right)',ja:'3人ソファ 右向き'},
- '소파 3인 코너 좌형':{en:'3-Seat Corner Sofa (Left)',ja:'3人コーナーソファ 左向き'},
- '소파 3인 코너 우형':{en:'3-Seat Corner Sofa (Right)',ja:'3人コーナーソファ 右向き'},
- '소파 3인 B 좌형':{en:'3-Seat Sofa B (Left)',ja:'3人ソファ B 左向き'},
- '소파 3인 B 우형':{en:'3-Seat Sofa B (Right)',ja:'3人ソファ B 右向き'},
- '소파 4인 A':{en:'4-Seat Sofa A',ja:'4人ソファ A'},
- '소파 4인 B':{en:'4-Seat Sofa B',ja:'4人ソファ B'},
- '소파 4인 코너 A 좌형':{en:'4-Seat Corner Sofa A (Left)',ja:'4人コーナーソファ A 左向き'},
- '소파 4인 코너 A 우형':{en:'4-Seat Corner Sofa A (Right)',ja:'4人コーナーソファ A 右向き'},
- '소파 4인 코너 B 좌형':{en:'4-Seat Corner Sofa B (Left)',ja:'4人コーナーソファ B 左向き'},
- '소파 4인 코너 B 우형':{en:'4-Seat Corner Sofa B (Right)',ja:'4人コーナーソファ B 右向き'},
- '소파 5인':{en:'5-Seat Sofa',ja:'5人ソファ'},
- '쿠션 S / L':{en:'Cushion S / L',ja:'クッション S / L'},
- '라운지':{en:'Lounge',ja:'ラウンジ'},
- '암레스트':{en:'Armrest',ja:'アームレスト'},
- '암레스트 좌형 · 미들':{en:'Armrest (Left) · Middle',ja:'アームレスト左 · ミドル'},
- '미들 · 암레스트 우형':{en:'Middle · Armrest (Right)',ja:'ミドル · アームレスト右'},
- '암레스트 우형 ×2':{en:'Armrest (Right) ×2',ja:'アームレスト右 ×2'},
- '암레스트 좌형 ×2':{en:'Armrest (Left) ×2',ja:'アームレスト左 ×2'},
- '코너 · 암레스트 좌형':{en:'Corner · Armrest (Left)',ja:'コーナー · アームレスト左'},
- '암레스트 우형 · 코너':{en:'Armrest (Right) · Corner',ja:'アームレスト右 · コーナー'},
- '암레스트 좌형 · 암레스트 우형':{en:'Armrest (Left) · Armrest (Right)',ja:'アームレスト左 · アームレスト右'},
- '암레스트 라운지 ×2':{en:'Armrest Lounge ×2',ja:'アームレスト ラウンジ ×2'},
- '암레스트 좌형 · 암레스트 라운지':{en:'Armrest (Left) · Armrest Lounge',ja:'アームレスト左 · アームレスト ラウンジ'},
- '암레스트 라운지 · 암레스트 우형':{en:'Armrest Lounge · Armrest (Right)',ja:'アームレスト ラウンジ · アームレスト右'},
- '암레스트 우형 ×2 · 미들':{en:'Armrest (Right) ×2 · Middle',ja:'アームレスト右 ×2 · ミドル'},
- '암레스트 좌형 ×2 · 미들':{en:'Armrest (Left) ×2 · Middle',ja:'アームレスト左 ×2 · ミドル'},
- '암레스트 좌형 · 미들 · 암레스트 우형':{en:'Armrest (Left) · Middle · Armrest (Right)',ja:'アームレスト左 · ミドル · アームレスト右'},
- '쿠션':{en:'Cushion',ja:'クッション'}
+ '암레스트 좌/우':{en:'Armrest L/R',ja:'アームレスト 左/右',ch:'扶手 左/右',tw:'扶手 左/右'},
+ '암레스트 라운지':{en:'Armrest Lounge',ja:'アームレスト ラウンジ',ch:'扶手躺椅',tw:'扶手躺椅'},
+ '미들':{en:'Middle',ja:'ミドル',ch:'中间',tw:'中間'},
+ '소파 3인 좌형':{en:'3-Seat Sofa (Left)',ja:'3人ソファ 左向き',ch:'3人沙发 左向',tw:'3人沙發 左向'},
+ '소파 3인 우형':{en:'3-Seat Sofa (Right)',ja:'3人ソファ 右向き',ch:'3人沙发 右向',tw:'3人沙發 右向'},
+ '소파 3인 코너 좌형':{en:'3-Seat Corner Sofa (Left)',ja:'3人コーナーソファ 左向き',ch:'3人转角沙发 左向',tw:'3人轉角沙發 左向'},
+ '소파 3인 코너 우형':{en:'3-Seat Corner Sofa (Right)',ja:'3人コーナーソファ 右向き',ch:'3人转角沙发 右向',tw:'3人轉角沙發 右向'},
+ '소파 3인 B 좌형':{en:'3-Seat Sofa B (Left)',ja:'3人ソファ B 左向き',ch:'3人沙发 B 左向',tw:'3人沙發 B 左向'},
+ '소파 3인 B 우형':{en:'3-Seat Sofa B (Right)',ja:'3人ソファ B 右向き',ch:'3人沙发 B 右向',tw:'3人沙發 B 右向'},
+ '소파 4인 A':{en:'4-Seat Sofa A',ja:'4人ソファ A',ch:'4人沙发 A',tw:'4人沙發 A'},
+ '소파 4인 B':{en:'4-Seat Sofa B',ja:'4人ソファ B',ch:'4人沙发 B',tw:'4人沙發 B'},
+ '소파 4인 코너 A 좌형':{en:'4-Seat Corner Sofa A (Left)',ja:'4人コーナーソファ A 左向き',ch:'4人转角沙发 A 左向',tw:'4人轉角沙發 A 左向'},
+ '소파 4인 코너 A 우형':{en:'4-Seat Corner Sofa A (Right)',ja:'4人コーナーソファ A 右向き',ch:'4人转角沙发 A 右向',tw:'4人轉角沙發 A 右向'},
+ '소파 4인 코너 B 좌형':{en:'4-Seat Corner Sofa B (Left)',ja:'4人コーナーソファ B 左向き',ch:'4人转角沙发 B 左向',tw:'4人轉角沙發 B 左向'},
+ '소파 4인 코너 B 우형':{en:'4-Seat Corner Sofa B (Right)',ja:'4人コーナーソファ B 右向き',ch:'4人转角沙发 B 右向',tw:'4人轉角沙發 B 右向'},
+ '소파 5인':{en:'5-Seat Sofa',ja:'5人ソファ',ch:'5人沙发',tw:'5人沙發'},
+ '쿠션 S / L':{en:'Cushion S / L',ja:'クッション S / L',ch:'靠垫 S / L',tw:'靠墊 S / L'},
+ '라운지':{en:'Lounge',ja:'ラウンジ',ch:'躺椅',tw:'躺椅'},
+ '암레스트':{en:'Armrest',ja:'アームレスト',ch:'扶手',tw:'扶手'},
+ '암레스트 좌형 · 미들':{en:'Armrest (Left) · Middle',ja:'アームレスト左 · ミドル',ch:'扶手左 · 中间',tw:'扶手左 · 中間'},
+ '미들 · 암레스트 우형':{en:'Middle · Armrest (Right)',ja:'ミドル · アームレスト右',ch:'中间 · 扶手右',tw:'中間 · 扶手右'},
+ '암레스트 우형 ×2':{en:'Armrest (Right) ×2',ja:'アームレスト右 ×2',ch:'扶手右 ×2',tw:'扶手右 ×2'},
+ '암레스트 좌형 ×2':{en:'Armrest (Left) ×2',ja:'アームレスト左 ×2',ch:'扶手左 ×2',tw:'扶手左 ×2'},
+ '코너 · 암레스트 좌형':{en:'Corner · Armrest (Left)',ja:'コーナー · アームレスト左',ch:'转角 · 扶手左',tw:'轉角 · 扶手左'},
+ '암레스트 우형 · 코너':{en:'Armrest (Right) · Corner',ja:'アームレスト右 · コーナー',ch:'扶手右 · 转角',tw:'扶手右 · 轉角'},
+ '암레스트 좌형 · 암레스트 우형':{en:'Armrest (Left) · Armrest (Right)',ja:'アームレスト左 · アームレスト右',ch:'扶手左 · 扶手右',tw:'扶手左 · 扶手右'},
+ '암레스트 라운지 ×2':{en:'Armrest Lounge ×2',ja:'アームレスト ラウンジ ×2',ch:'扶手躺椅 ×2',tw:'扶手躺椅 ×2'},
+ '암레스트 좌형 · 암레스트 라운지':{en:'Armrest (Left) · Armrest Lounge',ja:'アームレスト左 · アームレスト ラウンジ',ch:'扶手左 · 扶手躺椅',tw:'扶手左 · 扶手躺椅'},
+ '암레스트 라운지 · 암레스트 우형':{en:'Armrest Lounge · Armrest (Right)',ja:'アームレスト ラウンジ · アームレスト右',ch:'扶手躺椅 · 扶手右',tw:'扶手躺椅 · 扶手右'},
+ '암레스트 우형 ×2 · 미들':{en:'Armrest (Right) ×2 · Middle',ja:'アームレスト右 ×2 · ミドル',ch:'扶手右 ×2 · 中间',tw:'扶手右 ×2 · 中間'},
+ '암레스트 좌형 ×2 · 미들':{en:'Armrest (Left) ×2 · Middle',ja:'アームレスト左 ×2 · ミドル',ch:'扶手左 ×2 · 中间',tw:'扶手左 ×2 · 中間'},
+ '암레스트 좌형 · 미들 · 암레스트 우형':{en:'Armrest (Left) · Middle · Armrest (Right)',ja:'アームレスト左 · ミドル · アームレスト右',ch:'扶手左 · 中间 · 扶手右',tw:'扶手左 · 中間 · 扶手右'},
+ '쿠션':{en:'Cushion',ja:'クッション',ch:'靠垫',tw:'靠墊'}
 };
 function tr(dict,v){ v=(v||'').trim(); if(lang==='ko'||!v) return v; const e=dict[v]; return e?(e[lang]||v):v; }
 const trBrand=v=>tr(BRAND_I18N,v), trCat=v=>tr(CAT_I18N,v), trMeta=v=>tr(META_I18N,v);
@@ -485,10 +527,16 @@ function applyI18n(){
   document.documentElement.lang = lang;
   document.querySelectorAll('[data-i18n]').forEach(el=>{ const v=t(el.dataset.i18n); if(v) el.textContent=v; });
   document.querySelectorAll('[data-i18n-ph]').forEach(el=>{ const v=t(el.dataset.i18nPh); if(v) el.placeholder=v; });
-  document.querySelectorAll('#langSw button').forEach(b=>b.classList.toggle('on', b.dataset.lang===lang));
+  document.querySelectorAll('#langMenu button').forEach(b=>b.classList.toggle('on', b.dataset.lang===lang));
+  const cur=document.querySelector(`#langMenu button[data-lang="${lang}"]`), curEl=document.getElementById('langCur');
+  if(cur && curEl) curEl.textContent = cur.textContent.trim();
 }
-function setLang(l){ lang=l; try{localStorage.setItem('lang',l);}catch(e){} applyI18n(); if(typeof buildBrandSection==='function') buildBrandSection(); if(typeof route==='function') route(); }
-document.getElementById('langSw').addEventListener('click', e=>{ const b=e.target.closest('button[data-lang]'); if(b) setLang(b.dataset.lang); });
+const LANG_MENU=document.getElementById('langMenu'), LANG_TOGGLE=document.getElementById('langToggle');
+function closeLangMenu(){ LANG_MENU.hidden=true; LANG_TOGGLE.setAttribute('aria-expanded','false'); }
+function setLang(l){ lang=l; try{localStorage.setItem('lang',l);}catch(e){} closeLangMenu(); applyI18n(); if(typeof buildBrandSection==='function') buildBrandSection(); if(typeof route==='function') route(); }
+LANG_TOGGLE.addEventListener('click', e=>{ e.stopPropagation(); const open=LANG_MENU.hidden; LANG_MENU.hidden=!open; LANG_TOGGLE.setAttribute('aria-expanded', String(open)); });
+LANG_MENU.addEventListener('click', e=>{ const b=e.target.closest('button[data-lang]'); if(b) setLang(b.dataset.lang); });
+document.addEventListener('click', e=>{ if(!e.target.closest('#langSw')) closeLangMenu(); });
 applyI18n();
 
 // --- CSV 파서 (따옴표·줄바꿈 안전) ---
@@ -675,8 +723,8 @@ function currentList(){
   const q = document.getElementById('q').value.trim().toLowerCase();
   if(q){ const kw = q.split(/\s+/);
     list = list.filter(o=>{
-      const k=trKey(o), tj=TR.ja[k], te=TR.en[k];
-      const ext=[tj&&tj.kw,tj&&tj.desc,te&&te.kw,te&&te.desc].filter(Boolean).join(' ');
+      const k=trKey(o);
+      const ext=Object.values(TR).flatMap(m=>{ const e=m[k]; return e?[e.kw,e.desc]:[]; }).filter(Boolean).join(' ');
       const hay = `${o.brand} ${o.cat} ${o.name} ${o.desc} ${o.ko1} ${o.ko2} ${ext}`.toLowerCase();
       return kw.every(k=>hay.includes(k));
     });
@@ -1114,7 +1162,9 @@ fetch(CSV_URL)
       fetch(csvUrl(FAQ_TAB)).then(r=>r.ok?r.text():'').then(t=>{ if(t) faqRows=toFaq(parseCSV(t)); }).catch(()=>{}),
       fetch(csvUrl(CAUTION_TAB)).then(r=>r.ok?r.text():'').then(t=>{ if(t) cautionRows=toCaution(parseCSV(t)); }).catch(()=>{}),
       fetch(csvUrl(TRANS_TABS.en)).then(r=>r.ok?r.text():'').then(t=>{ if(t) TR.en=toTrans(parseCSV(t)); }).catch(()=>{}),
-      fetch(csvUrl(TRANS_TABS.ja)).then(r=>r.ok?r.text():'').then(t=>{ if(t) TR.ja=toTrans(parseCSV(t)); }).catch(()=>{})
+      fetch(csvUrl(TRANS_TABS.ja)).then(r=>r.ok?r.text():'').then(t=>{ if(t) TR.ja=toTrans(parseCSV(t)); }).catch(()=>{}),
+      fetch(csvUrl(TRANS_TABS.ch)).then(r=>r.ok?r.text():'').then(t=>{ if(t) TR.ch=toTrans(parseCSV(t)); }).catch(()=>{}),
+      fetch(csvUrl(TRANS_TABS.tw)).then(r=>r.ok?r.text():'').then(t=>{ if(t) TR.tw=toTrans(parseCSV(t)); }).catch(()=>{})
     ]).finally(route);
   })
   .catch(e=>{ view.innerHTML = `<div class="center">불러오지 못했습니다. 시트 공유 설정(링크가 있는 모든 사용자·보기)과 탭 이름 '${esc(CATALOG_TAB)}'을 확인해 주세요.<br><small>${esc(String(e))}</small></div>`; });
