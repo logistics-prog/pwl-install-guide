@@ -441,6 +441,42 @@ function t(k){ return (T[lang] && T[lang][k]!=null) ? T[lang][k] : (T.ko[k]||'')
 const BRAND_I18N = {'잭슨카멜레온':{en:'Jackson Chameleon',ja:'ジャクソンカメレオン'},'무니토':{en:'MUNITO',ja:'MUNITO'},'바이헤이데이':{en:'BYHEYDEY',ja:'BYHEYDEY'},'오블리크테이블':{en:'Oblique Table',ja:'Oblique Table'},'텍스쳐':{en:'TXTURE',ja:'TXTURE'},'매직볼트':{en:'MAGICVAULT',ja:'MAGICVAULT'},'NPD':{en:'NPD',ja:'NPD'}};
 const CAT_I18N = {'소파':{en:'Sofa',ja:'ソファ'},'베드':{en:'Bed',ja:'ベッド'},'다이닝테이블':{en:'Dining Table',ja:'ダイニングテーブル'},'사이드테이블 & 소파테이블':{en:'Side & Sofa Table',ja:'サイド＆ソファテーブル'},'체어':{en:'Chair',ja:'チェア'},'수납장':{en:'Storage',ja:'収納'},'LEFF':{en:'LEFF',ja:'LEFF'},'ETC':{en:'ETC',ja:'その他'}};
 const META_I18N = {'없음':{en:'None',ja:'なし'},'2인 권장':{en:'2 people rec.',ja:'2人推奨'},'1인 권장':{en:'1 person rec.',ja:'1人推奨'},'30분 내외':{en:'~30 min',ja:'約30分'},'1단계':{en:'1 step',ja:'1 ステップ'},'2단계':{en:'2 steps',ja:'2 ステップ'},'3단계':{en:'3 steps',ja:'3 ステップ'}};
+// TARTAN 모듈 구성 카드 이름/구성(전체 문자열 매칭). 좌형=Left/左, 우형=Right/右
+const MODULE_I18N = {
+ '암레스트 좌/우':{en:'Armrest L/R',ja:'アームレスト 左/右'},
+ '암레스트 라운지':{en:'Armrest Lounge',ja:'アームレスト ラウンジ'},
+ '미들':{en:'Middle',ja:'ミドル'},
+ '소파 3인 좌형':{en:'3-Seat Sofa (Left)',ja:'3人ソファ 左向き'},
+ '소파 3인 우형':{en:'3-Seat Sofa (Right)',ja:'3人ソファ 右向き'},
+ '소파 3인 코너 좌형':{en:'3-Seat Corner Sofa (Left)',ja:'3人コーナーソファ 左向き'},
+ '소파 3인 코너 우형':{en:'3-Seat Corner Sofa (Right)',ja:'3人コーナーソファ 右向き'},
+ '소파 3인 B 좌형':{en:'3-Seat Sofa B (Left)',ja:'3人ソファ B 左向き'},
+ '소파 3인 B 우형':{en:'3-Seat Sofa B (Right)',ja:'3人ソファ B 右向き'},
+ '소파 4인 A':{en:'4-Seat Sofa A',ja:'4人ソファ A'},
+ '소파 4인 B':{en:'4-Seat Sofa B',ja:'4人ソファ B'},
+ '소파 4인 코너 A 좌형':{en:'4-Seat Corner Sofa A (Left)',ja:'4人コーナーソファ A 左向き'},
+ '소파 4인 코너 A 우형':{en:'4-Seat Corner Sofa A (Right)',ja:'4人コーナーソファ A 右向き'},
+ '소파 4인 코너 B 좌형':{en:'4-Seat Corner Sofa B (Left)',ja:'4人コーナーソファ B 左向き'},
+ '소파 4인 코너 B 우형':{en:'4-Seat Corner Sofa B (Right)',ja:'4人コーナーソファ B 右向き'},
+ '소파 5인':{en:'5-Seat Sofa',ja:'5人ソファ'},
+ '쿠션 S / L':{en:'Cushion S / L',ja:'クッション S / L'},
+ '라운지':{en:'Lounge',ja:'ラウンジ'},
+ '암레스트':{en:'Armrest',ja:'アームレスト'},
+ '암레스트 좌형 · 미들':{en:'Armrest (Left) · Middle',ja:'アームレスト左 · ミドル'},
+ '미들 · 암레스트 우형':{en:'Middle · Armrest (Right)',ja:'ミドル · アームレスト右'},
+ '암레스트 우형 ×2':{en:'Armrest (Right) ×2',ja:'アームレスト右 ×2'},
+ '암레스트 좌형 ×2':{en:'Armrest (Left) ×2',ja:'アームレスト左 ×2'},
+ '코너 · 암레스트 좌형':{en:'Corner · Armrest (Left)',ja:'コーナー · アームレスト左'},
+ '암레스트 우형 · 코너':{en:'Armrest (Right) · Corner',ja:'アームレスト右 · コーナー'},
+ '암레스트 좌형 · 암레스트 우형':{en:'Armrest (Left) · Armrest (Right)',ja:'アームレスト左 · アームレスト右'},
+ '암레스트 라운지 ×2':{en:'Armrest Lounge ×2',ja:'アームレスト ラウンジ ×2'},
+ '암레스트 좌형 · 암레스트 라운지':{en:'Armrest (Left) · Armrest Lounge',ja:'アームレスト左 · アームレスト ラウンジ'},
+ '암레스트 라운지 · 암레스트 우형':{en:'Armrest Lounge · Armrest (Right)',ja:'アームレスト ラウンジ · アームレスト右'},
+ '암레스트 우형 ×2 · 미들':{en:'Armrest (Right) ×2 · Middle',ja:'アームレスト右 ×2 · ミドル'},
+ '암레스트 좌형 ×2 · 미들':{en:'Armrest (Left) ×2 · Middle',ja:'アームレスト左 ×2 · ミドル'},
+ '암레스트 좌형 · 미들 · 암레스트 우형':{en:'Armrest (Left) · Middle · Armrest (Right)',ja:'アームレスト左 · ミドル · アームレスト右'},
+ '쿠션':{en:'Cushion',ja:'クッション'}
+};
 function tr(dict,v){ v=(v||'').trim(); if(lang==='ko'||!v) return v; const e=dict[v]; return e?(e[lang]||v):v; }
 const trBrand=v=>tr(BRAND_I18N,v), trCat=v=>tr(CAT_I18N,v), trMeta=v=>tr(META_I18N,v);
 // 동적 텍스트: 언어열(_en/_ja) 우선, 없으면 한국어 폴백
@@ -907,8 +943,8 @@ function moduleGuideHTML(){
     <div class="mg-grid">
       ${TARTAN_MODULES.map(m=>`<div class="mg-card">
         <div class="mg-img">${composeModules(m.mods)}</div>
-        <div class="mg-name">${esc(m.name)}</div>
-        <div class="mg-sub">${esc(m.sub)}</div>
+        <div class="mg-name">${esc(tr(MODULE_I18N,m.name))}</div>
+        <div class="mg-sub">${esc(tr(MODULE_I18N,m.sub))}</div>
       </div>`).join('')}
     </div>
   </div>`;
