@@ -658,7 +658,7 @@ function render(list){
     const items = byBrand[b].sort((x,y)=>
       (Number(x.order||1e9)-Number(y.order||1e9)) || x.name.localeCompare(y.name,'ko'));
     return `<section>
-      <div class="sec-head"><h2>${esc(b)}</h2><span class="count">${items.length}</span></div>
+      <div class="sec-head"><h2>${esc(trBrand(b))}</h2><span class="count">${items.length}</span></div>
       <div class="grid">${items.map(cardHTML).join('')}</div>
     </section>`;
   }).join('');
@@ -725,7 +725,9 @@ function currentList(){
     list = list.filter(o=>{
       const k=trKey(o);
       const ext=Object.values(TR).flatMap(m=>{ const e=m[k]; return e?[e.kw,e.desc]:[]; }).filter(Boolean).join(' ');
-      const hay = `${o.brand} ${o.cat} ${o.name} ${o.desc} ${o.ko1} ${o.ko2} ${ext}`.toLowerCase();
+      const brandTr=Object.values(BRAND_I18N[o.brand]||{}).join(' ');   // 번역된 브랜드명(EN/JA/CH/TW)도 검색 대상
+      const catTr=Object.values(CAT_I18N[o.cat]||{}).join(' ');
+      const hay = `${o.brand} ${o.cat} ${o.name} ${o.desc} ${o.ko1} ${o.ko2} ${brandTr} ${catTr} ${ext}`.toLowerCase();
       return kw.every(k=>hay.includes(k));
     });
   }
@@ -735,7 +737,7 @@ function renderChip(){
   const fb = document.getElementById('filterbar');
   let h = '';
   if(currentCat)   h += `<button class="chip" data-clear="cat">${esc(currentCat)} &times;</button>`;
-  if(currentBrand) h += `<button class="chip" data-clear="brand">${esc(currentBrand)} &times;</button>`;
+  if(currentBrand) h += `<button class="chip" data-clear="brand">${esc(trBrand(currentBrand))} &times;</button>`;
   fb.innerHTML = h;
   fb.querySelectorAll('.chip').forEach(b=>b.onclick = ()=>{
     if(b.dataset.clear==='cat') selectCat(''); else selectBrand(currentBrand);
