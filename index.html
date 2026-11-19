@@ -389,7 +389,7 @@ function toTrans(grid){
   const head=grid[1].map(h=>(h||'').trim());
   const clean=h=>(h||'').replace(/\s/g,'').toLowerCase();
   const idx=lbl=>head.findIndex(h=>clean(h).startsWith(clean(lbl)));
-  const c={brand:idx('브랜드'),cat:idx('카테고리'),art:idx('아티클'),kw:idx('검색'),
+  const c={brand:idx('브랜드'),cat:idx('카테고리'),art:idx('아티클'),kw:idx('검색'),link:idx('링크'),
     desc:idx('설명'),detail:idx('상세'),simdesc:idx('시뮬설명'),
     q:idx('질문'),a:idx('답변'),
     title:idx('제목'),issue:idx('자주발생'),action:idx('조치'),review:idx('체크')};
@@ -397,8 +397,9 @@ function toTrans(grid){
   grid.slice(2).forEach(r=>{
     if(!g(r,'brand') && !g(r,'art')) return;
     const key=[g(r,'brand'),g(r,'cat'),g(r,'art')].map(s=>s.replace(/\s/g,'').toLowerCase()).join('|');
-    const e=out[key]||(out[key]={kw:'',desc:'',detail:'',simdesc:'',faqs:[],cautions:[]});
+    const e=out[key]||(out[key]={kw:'',link:'',desc:'',detail:'',simdesc:'',faqs:[],cautions:[]});
     if(g(r,'kw')&&!e.kw) e.kw=g(r,'kw');
+    if(g(r,'link')&&!e.link) e.link=g(r,'link');
     if(g(r,'desc')&&!e.desc) e.desc=g(r,'desc');
     if(g(r,'detail')&&!e.detail) e.detail=g(r,'detail');
     if(g(r,'simdesc')&&!e.simdesc) e.simdesc=g(r,'simdesc');
@@ -1073,8 +1074,9 @@ function detailHTML(o){
   const useTartan   = st.toUpperCase()==='TARTAN' || (!st && U.includes('TARTAN'));
   const usePebble   = st.toUpperCase()==='PEBBLE' || (!st && U.includes('PEBBLE'));
   const useDelivery = st.includes('단순배송')      || (!st && U.includes('PETALO'));
-  // 링크(H열): URL이면 조립설명서, "불필요/없음"이면 안내, 비어있으면 준비중
-  const lv = (o.link||'').trim();
+  const tr = trOf(o);
+  // 링크: 현재 언어 번역탭 링크(있으면) → 없으면 카탈로그(한국어) 링크로 폴백
+  const lv = ((tr && tr.link) || o.link || '').trim();
   const hasGuide = /^https?:\/\//i.test(lv);
   const noGuide  = /^(불필요|없음|x|해당없음|불필요함)$/i.test(lv);
   const id = hasGuide ? driveId(lv) : '';
@@ -1088,7 +1090,6 @@ function detailHTML(o){
   const defBody = hasGuide ? ''
     : noGuide ? `<div class="center"><b style="font-size:17px;color:var(--ink)">${t('simpleTitle')}</b><br><span style="font-size:13.5px">${t('simpleBody')}</span></div>`
     : `<div class="center">${t('pendingBody')}</div>`;
-  const tr = trOf(o);
   const simdesc = (tr&&tr.simdesc) || o.simdesc;
   const ddesc = (tr&&(tr.detail||tr.desc)) || o.detail || o.desc;
   const caution = cautionHTML(o);
